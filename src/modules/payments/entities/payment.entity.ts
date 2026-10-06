@@ -5,7 +5,7 @@ export class Payment {
 
     constructor(
         public readonly paymentId: string,
-        public readonly orderId: string,
+        public readonly reservationId: string,
         status: PaymentStatusEnum,
         public createdAt: Date = new Date(),
         public updatedAt: Date = new Date(),

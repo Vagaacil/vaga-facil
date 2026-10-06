@@ -1,8 +1,8 @@
-import { OrderStatusEnum } from "src/common/enums/order-status.enum";
+import { ReservationStatusEnum } from "src/common/enums/reservation-status.enum";
 
 export class ConfirmOrderResponseDto {
     constructor(
-        public orderId: string,
-        public orderStatus: OrderStatusEnum,
+        public reservationId: string,
+        public reservationStatus: ReservationStatusEnum,
     ) { }
 }

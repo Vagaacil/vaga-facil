@@ -1,7 +1,6 @@
-export enum OrderStatusEnum {
+export enum ReservationStatusEnum {
     PENDING = 'pending',
     CONFIRMED = 'confirmed',
-    SHIPPED = 'shipped',
-    DELIVERED = 'delivered',
     CANCELLED = 'cancelled',
+    COMPLETED = 'completed',
 }

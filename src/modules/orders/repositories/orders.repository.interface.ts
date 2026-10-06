@@ -1,7 +1,7 @@
-import { Order } from "../entities/order.entity";
+import { Reservation } from "../entities/reservation.entity";
 
 export const ORDERS_REPOSITORY = 'ORDERS_REPOSITORY';
 
 export interface IOrdersRepository {
-    findById(orderId: string): Promise<Order | null>;
+    findById(reservationId: string): Promise<Reservation | null>;
 }
