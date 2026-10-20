@@ -1,24 +1,30 @@
-import { Inject, Injectable } from "@nestjs/common";
-import { ORDERS_REPOSITORY } from "../repositories/orders.repository.interface";
-import type { OrdersRepository } from "../repositories/orders.repository.interface";
-import { ConfirmOrderResponseDto } from "../dto/confirm-order-response.dto";
-import { OrderNotFoundException } from "../../../common/exceptions/order-not-found.exception";
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfirmOrderResponseDto } from '../dto/confirm-order-response.dto';
+import { ReservationNotFoundException } from '../../../common/exceptions/reservation-not-found.exception';
+import {
+  IOrdersRepository,
+  ORDERS_REPOSITORY,
+} from '../repositories/orders.repository.interface';
 
 @Injectable()
 export class OrdersService {
-    constructor(
-        @Inject(ORDERS_REPOSITORY)
-        private readonly ordersRepository: OrdersRepository,
-    ) { }
+  constructor(
+    @Inject(ORDERS_REPOSITORY)
+    private readonly ordersRepository: IOrdersRepository,
+  ) {}
 
-    async confirmOrder(orderId: string) {
-        const order = await this.ordersRepository.findById(orderId);
+  async confirmOrder(reservationId: string): Promise<ConfirmOrderResponseDto> {
+    const reservation = await this.ordersRepository.findById(reservationId);
 
-        if (!order) {
-            throw new OrderNotFoundException(orderId);
-        }
+    if (!reservation) {
+      throw new ReservationNotFoundException(reservationId);
+    }
 
-        throw new Error("Method not implemented.");
-    } //: Promise<ConfirmOrderResponseDto> {
+    reservation.confirmReservation();
 
+    return new ConfirmOrderResponseDto(
+      reservation.reservationId,
+      reservation.getStatus(),
+    );
+  }
 }
