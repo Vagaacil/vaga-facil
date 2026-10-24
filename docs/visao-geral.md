@@ -21,7 +21,7 @@ O recorte inclui a permanência, a vaga, o cálculo da tarifa, a coordenação d
 
 ## Estado da implementação
 
-O projeto usa NestJS e TypeScript. Hoje, o módulo da aplicação registra apenas o endpoint raiz `GET /`, que retorna `Hello World!`. Há código de protótipo para confirmação de reservas e uma entidade de pagamento, mas o serviço de reservas não está ligado ao módulo HTTP, não existe adaptador concreto de repositório e não há banco de dados, migrações ou containers configurados.
+O projeto usa NestJS 12, TypeScript, ESM, pnpm 12.15.0 e Vitest. Hoje, o módulo da aplicação registra apenas o endpoint raiz `GET /`, que retorna `Hello World!`. Há código de protótipo para confirmação de reservas e uma entidade de pagamento, mas o serviço de reservas não está ligado ao módulo HTTP, não existe adaptador concreto de repositório e não há banco de dados, migrações ou containers configurados.
 
 Assim, o código existente não implementa o caso de uso de saída e tarifa. As regras do slice devem ser introduzidas no domínio de Ocupação e Acesso, sem mover o cálculo para Pagamentos ou acoplar a regra a uma tecnologia de persistência. O Application Service futuro deve coordenar a busca, a operação de domínio e a persistência, sem tomar a decisão de negócio.
 
@@ -29,11 +29,13 @@ Assim, o código existente não implementa o caso de uso de saída e tarifa. As 
 
 - Framework: NestJS.
 - Linguagem: TypeScript.
-- Gerenciador de pacotes: pnpm.
+- Módulos: ESM.
+- Testes: Vitest.
+- Gerenciador de pacotes: pnpm 12.15.0.
 - Porta HTTP: variável `PORT`, com padrão `3002`; ver `.env.example`.
 - Banco de dados, persistência concreta e containers: não configurados.
 
-Consulte o [README](../README.md) para instalação, execução e comandos de validação. As evidências de recursos externos, como Issues, branches, permissões e histórico, devem ser verificadas diretamente no GitHub.
+Consulte o [README](../README.md) para instalação, execução e comandos de validação. O relatório [Base técnica Vaga Fácil](./base-tecnica-vaga-facil.md) registra as verificações realizadas e o planejamento arquitetural do primeiro slice. As evidências de recursos externos, como Issues, branches, permissões e histórico, devem ser verificadas diretamente no GitHub.
 
 ## Rastreabilidade planejada
 
