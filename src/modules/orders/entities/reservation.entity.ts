@@ -1,33 +1,33 @@
-import { ReservationStatusEnum } from '../../../common/enums/reservation-status.enum';
-import { ReservationAlreadyConfirmedException } from '../../../common/exceptions/reservation-already-confirmed.exception';
+import { ReservationStatusEnum } from '../../../common/enums/reservation-status.enum.js';
+import { ReservationAlreadyConfirmedException } from '../../../common/exceptions/reservation-already-confirmed.exception.js';
 
 export class Reservation {
-    private status: ReservationStatusEnum;
+  private status: ReservationStatusEnum;
 
-    constructor(
-        public readonly reservationId: string,
-        public readonly parkingSpotId: string,
-        public readonly userId: string,
-        public startsAt: Date,
-        public endsAt: Date,
-        status: ReservationStatusEnum = ReservationStatusEnum.PENDING,
-        public readonly createdAt: Date = new Date(),
-    ) {
-        this.status = status ?? ReservationStatusEnum.PENDING;
-    }
+  constructor(
+    public readonly reservationId: string,
+    public readonly parkingSpotId: string,
+    public readonly userId: string,
+    public startsAt: Date,
+    public endsAt: Date,
+    status: ReservationStatusEnum = ReservationStatusEnum.PENDING,
+    public readonly createdAt: Date = new Date(),
+  ) {
+    this.status = status ?? ReservationStatusEnum.PENDING;
+  }
 
-    public getStatus(): ReservationStatusEnum {
-        return this.status;
-    }
+  public getStatus(): ReservationStatusEnum {
+    return this.status;
+  }
 
-    public setStatus(status: ReservationStatusEnum): void {
-        this.status = status;
-    }
+  public setStatus(status: ReservationStatusEnum): void {
+    this.status = status;
+  }
 
-    confirmReservation(): void {
-        if (this.status === ReservationStatusEnum.CONFIRMED) {
-            throw new ReservationAlreadyConfirmedException();
-        }
-        this.status = ReservationStatusEnum.CONFIRMED;
+  confirmReservation(): void {
+    if (this.status === ReservationStatusEnum.CONFIRMED) {
+      throw new ReservationAlreadyConfirmedException();
     }
+    this.status = ReservationStatusEnum.CONFIRMED;
+  }
 }

@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ConfirmOrderResponseDto } from '../dto/confirm-order-response.dto';
-import { ReservationNotFoundException } from '../../../common/exceptions/reservation-not-found.exception';
+import { ConfirmOrderResponseDto } from '../dto/confirm-order-response.dto.js';
+import { ReservationNotFoundException } from '../../../common/exceptions/reservation-not-found.exception.js';
 import {
-  IOrdersRepository,
   ORDERS_REPOSITORY,
-} from '../repositories/orders.repository.interface';
+  type IOrdersRepository,
+} from '../repositories/orders.repository.interface.js';
 
 @Injectable()
 export class OrdersService {

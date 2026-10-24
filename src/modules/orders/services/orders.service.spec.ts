@@ -1,21 +1,22 @@
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { Test } from '@nestjs/testing';
-import { ReservationStatusEnum } from '../../../common/enums/reservation-status.enum';
-import { ReservationAlreadyConfirmedException } from '../../../common/exceptions/reservation-already-confirmed.exception';
-import { ReservationNotFoundException } from '../../../common/exceptions/reservation-not-found.exception';
-import { Reservation } from '../entities/reservation.entity';
+import { ReservationStatusEnum } from '../../../common/enums/reservation-status.enum.js';
+import { ReservationAlreadyConfirmedException } from '../../../common/exceptions/reservation-already-confirmed.exception.js';
+import { ReservationNotFoundException } from '../../../common/exceptions/reservation-not-found.exception.js';
+import { Reservation } from '../entities/reservation.entity.js';
 import {
   IOrdersRepository,
   ORDERS_REPOSITORY,
-} from '../repositories/orders.repository.interface';
-import { OrdersService } from './orders.service';
+} from '../repositories/orders.repository.interface.js';
+import { OrdersService } from './orders.service.js';
 
 describe('OrdersService', () => {
   let ordersService: OrdersService;
-  let ordersRepository: jest.Mocked<IOrdersRepository>;
+  let ordersRepository: Mocked<IOrdersRepository>;
 
   beforeEach(async () => {
-    const ordersRepositoryMock: jest.Mocked<IOrdersRepository> = {
-      findById: jest.fn(),
+    const ordersRepositoryMock: Mocked<IOrdersRepository> = {
+      findById: vi.fn(),
     };
 
     const module = await Test.createTestingModule({
@@ -38,7 +39,7 @@ describe('OrdersService', () => {
     await expect(ordersService.confirmOrder('1')).rejects.toThrow(
       ReservationNotFoundException,
     );
-    expect(ordersRepository.findById).toHaveBeenCalledWith('1');
+    expect(ordersRepository.findById.mock.calls).toContainEqual(['1']);
   });
 
   it('confirms the reservation and returns its status', async () => {
