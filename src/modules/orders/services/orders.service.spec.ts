@@ -12,11 +12,16 @@ import { OrdersService } from './orders.service.js';
 
 describe('OrdersService', () => {
   let ordersService: OrdersService;
-  let ordersRepository: Mocked<IOrdersRepository>;
+  let findByIdMock: ReturnType<typeof vi.fn>;
+  let saveMock: ReturnType<typeof vi.fn>;
 
   beforeEach(async () => {
+    findByIdMock = vi.fn();
+    saveMock = vi.fn();
+
     const ordersRepositoryMock: Mocked<IOrdersRepository> = {
-      findById: vi.fn(),
+      findById: findByIdMock,
+      save: saveMock,
     };
 
     const module = await Test.createTestingModule({
@@ -30,16 +35,15 @@ describe('OrdersService', () => {
     }).compile();
 
     ordersService = module.get(OrdersService);
-    ordersRepository = module.get(ORDERS_REPOSITORY);
   });
 
   it('throws when the reservation does not exist', async () => {
-    ordersRepository.findById.mockResolvedValue(null);
+    findByIdMock.mockResolvedValue(null);
 
     await expect(ordersService.confirmOrder('1')).rejects.toThrow(
       ReservationNotFoundException,
     );
-    expect(ordersRepository.findById.mock.calls).toContainEqual(['1']);
+    expect(findByIdMock.mock.calls).toContainEqual(['1']);
   });
 
   it('confirms the reservation and returns its status', async () => {
@@ -50,13 +54,15 @@ describe('OrdersService', () => {
       new Date(),
       new Date(),
     );
-    ordersRepository.findById.mockResolvedValue(reservation);
+    findByIdMock.mockResolvedValue(reservation);
+    saveMock.mockResolvedValue(reservation);
 
     const response = await ordersService.confirmOrder('1');
 
     expect(reservation.getStatus()).toBe(ReservationStatusEnum.CONFIRMED);
     expect(response.reservationId).toBe('1');
     expect(response.reservationStatus).toBe(ReservationStatusEnum.CONFIRMED);
+    expect(saveMock).toHaveBeenCalledWith(reservation);
   });
 
   it('throws when the reservation has already been confirmed', async () => {
@@ -68,7 +74,7 @@ describe('OrdersService', () => {
       new Date(),
       ReservationStatusEnum.CONFIRMED,
     );
-    ordersRepository.findById.mockResolvedValue(reservation);
+    findByIdMock.mockResolvedValue(reservation);
 
     await expect(ordersService.confirmOrder('1')).rejects.toThrow(
       ReservationAlreadyConfirmedException,

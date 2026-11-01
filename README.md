@@ -33,6 +33,29 @@ pnpm start:dev
 
 Por padrão, a aplicação fica disponível em `http://localhost:3002`. Para usar outra porta, defina `PORT` no ambiente; `.env.example` documenta o valor padrão. Se Node.js acabou de ser instalado no Windows e ainda não for reconhecido, reabra o terminal ou o VS Code para atualizar o ambiente. O arquivo [requests.http](./requests.http) contém a requisição para testar a rota inicial com uma extensão HTTP Client do VS Code.
 
+## Endpoints principais
+
+- `GET /` — retorno do scaffold inicial
+- `POST /orders/:reservationId/confirm` — confirma uma reserva e retorna o status atualizado
+- `POST /parking-stays/:parkingStayId/checkout` — encerra a permanência, calcula a tarifa e libera a vaga
+
+## Persistência com PostgreSQL
+
+A aplicação já está preparada para usar PostgreSQL via TypeORM quando a variável `DB_ENABLED=true` estiver definida. O arquivo `.env.example` contém as credenciais padrão e o projeto inclui um `docker-compose.yml` para subir uma instância local:
+
+```bash
+docker compose up -d postgres
+```
+
+Em seguida, configure o ambiente:
+
+```bash
+cp .env.example
+DB_ENABLED=true
+```
+
+E execute a aplicação normalmente com `pnpm start:dev`.
+
 ## Testes e validações
 
 ```bash

@@ -21,6 +21,7 @@ export class OrdersService {
     }
 
     reservation.confirmReservation();
+    await this.ordersRepository.save(reservation);
 
     return new ConfirmOrderResponseDto(
       reservation.reservationId,
