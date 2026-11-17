@@ -59,6 +59,26 @@ describe('AppController (e2e)', () => {
       });
   });
 
+  it('/orders/missing/confirm (POST) returns 404', async () => {
+    const response = await request(app.getHttpServer()).post(
+      '/orders/missing/confirm',
+    );
+
+    expect(response.status).toBe(404);
+    expect(response.body.message).toContain('Reservation with id "missing"');
+  });
+
+  it('/parking-stays/missing/checkout (POST) returns 404', async () => {
+    const response = await request(app.getHttpServer()).post(
+      '/parking-stays/missing/checkout',
+    );
+
+    expect(response.status).toBe(404);
+    expect(response.body.message).toContain(
+      'Parking stay with id "missing"',
+    );
+  });
+
   afterEach(async () => {
     await app.close();
   });

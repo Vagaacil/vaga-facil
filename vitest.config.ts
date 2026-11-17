@@ -27,6 +27,13 @@ export default defineConfig({
   ],
   test: {
     environment: 'node',
-    include: ['src/**/*.spec.ts', 'test/**/*.e2e-spec.ts'],
+    include:
+      process.env.TEST_DB_ENABLED === 'true'
+        ? [
+            'src/**/*.spec.ts',
+            'test/**/*.e2e-spec.ts',
+            'test/postgres.integration.spec.ts',
+          ]
+        : ['src/**/*.spec.ts', 'test/**/*.e2e-spec.ts'],
   },
 });

@@ -19,7 +19,9 @@
     "test:watch": "vitest",
     "test:cov": "vitest run --coverage",
     "test:debug": "node --inspect-brk ./node_modules/vitest/vitest.mjs --run",
-    "test:e2e": "vitest run test/app.e2e-spec.ts"
+    "test:e2e": "vitest run test/app.e2e-spec.ts",
+    "test:integration": "cross-env TEST_DB_ENABLED=true vitest run test/postgres.integration.spec.ts",
+    "migration:run": "cross-env DB_ENABLED=true node --experimental-strip-types src/database/run-migrations.ts"
   },
   "dependencies": {
     "@nestjs/common": "^12.2.0",
@@ -42,6 +44,7 @@
     "@types/node": "^24.0.0",
     "@types/supertest": "^7.0.0",
     "@vitest/coverage-v8": "^5.0.5",
+    "cross-env": "^10.0.0",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",

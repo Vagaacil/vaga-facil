@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrdersController } from './controllers/orders.controller.js';
-import { Reservation } from './entities/reservation.entity.js';
+import { ReservationOrmEntity } from './entities/reservation.orm-entity.js';
 import { ORDERS_REPOSITORY } from './repositories/orders.repository.interface.js';
 import { InMemoryOrdersRepository } from './repositories/in-memory-orders.repository.js';
 import { TypeOrmOrdersRepository } from './repositories/typeorm-orders.repository.js';
@@ -21,7 +21,7 @@ const repositoryProvider =
 @Module({
   imports:
     process.env.DB_ENABLED === 'true'
-      ? [TypeOrmModule.forFeature([Reservation])]
+      ? [TypeOrmModule.forFeature([ReservationOrmEntity])]
       : [],
   controllers: [OrdersController],
   providers: [OrdersService, repositoryProvider],

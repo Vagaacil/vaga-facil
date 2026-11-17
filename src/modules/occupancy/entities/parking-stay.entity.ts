@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { ParkingStayStatusEnum } from '../../../common/enums/parking-stay-status.enum.js';
 import { ParkingStayAlreadyClosedException } from '../../../common/exceptions/parking-stay-already-closed.exception.js';
 
@@ -36,7 +37,9 @@ export class ParkingStay {
     }
 
     if (endedAt < this.startedAt) {
-      throw new Error('Checkout time cannot be before the stay start time.');
+      throw new BadRequestException(
+        'Checkout time cannot be before the stay start time.',
+      );
     }
 
     const elapsedMinutes = Math.max(

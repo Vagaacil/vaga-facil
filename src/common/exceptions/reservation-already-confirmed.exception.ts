@@ -1,4 +1,6 @@
-export class ReservationAlreadyConfirmedException extends Error {
+import { ConflictException } from '@nestjs/common';
+
+export class ReservationAlreadyConfirmedException extends ConflictException {
   constructor() {
     super('Reservation is already confirmed.');
     this.name = 'ReservationAlreadyConfirmedException';

@@ -4,19 +4,22 @@ Backend da plataforma Vaga Fácil, um sistema para apoiar a gestão de estaciona
 
 ## Estado atual
 
-Este repositório contém a base técnica em NestJS 12, TypeScript e ESM. A aplicação expõe apenas o endpoint inicial `GET /`, que retorna `Hello World!`. Há protótipos de domínio e serviço para confirmação de reservas, além de uma entidade de pagamento, mas eles ainda não estão conectados à aplicação, não têm implementação concreta de persistência e não correspondem ao primeiro slice selecionado.
+Este repositório contém a base técnica em NestJS 12, TypeScript e ESM com a implementação funcional dos casos de uso de confirmação de reserva e checkout de permanência. A aplicação expõe também o endpoint inicial `GET /`, além dos endpoints de domínio:
 
-O primeiro slice planejado é **registrar a saída de um veículo e calcular a tarifa**. O ator é o operador; o resultado esperado é encerrar a permanência, calcular a tarifa e liberar a vaga. A regra central identificada é a RN02, cujo cálculo pertence ao contexto de Ocupação e Acesso. Pagamentos, reservas, autenticação e administração ficam fora deste recorte. A implementação deste caso de uso não faz parte da preparação da base técnica.
+- `POST /orders/:reservationId/confirm`
+- `POST /parking-stays/:parkingStayId/checkout`
+
+O sistema está estruturado por módulos, serviços de aplicação, entidades, repositórios e testes automatizados. A persistência pode ser executada em memória ou com PostgreSQL quando `DB_ENABLED=true`.
 
 | Área | Situação |
 | --- | --- |
 | Framework e linguagem | NestJS 12 e TypeScript configurados em ESM |
 | Gerenciador de pacotes | pnpm 12.15.0, fixado em `package.json` |
 | Testes | Vitest para testes unitários e e2e |
-| Endpoint funcional | Somente `GET /` do scaffold NestJS |
-| Banco de dados e persistência concreta | Ainda não configurados |
-| Containers e migrações | Ainda não configurados |
-| Primeiro slice de saída e tarifa | Planejado; ainda não implementado |
+| Endpoints funcionais | `GET /`, `POST /orders/:reservationId/confirm`, `POST /parking-stays/:parkingStayId/checkout` |
+| Banco de dados e persistência concreta | Suporte configurado para PostgreSQL via TypeORM e fallback em memória |
+| Containers e migrações | Disponíveis por `docker-compose.yml` e configuração de ambiente |
+| Primeiro slice de saída e tarifa | Implementado no serviço de ocupação e validado por testes |
 | Porta HTTP | `PORT`, com padrão `3002` |
 
 ## Requisitos
@@ -65,11 +68,18 @@ pnpm build
 pnpm lint
 ```
 
-Os testes existentes cobrem o endpoint raiz e o protótipo de confirmação de reservas. Eles não validam o futuro fluxo de saída e cálculo de tarifa.
+Os testes existentes cobrem o endpoint raiz, a confirmação de reservas e o checkout de permanência, incluindo cenários de erro para identidades inexistentes.
 
 ## Documentação
 
 - [Visão geral do sistema e do primeiro slice](./docs/visao-geral.md)
-- [Relatório da base técnica NestJS 12 e planejamento do primeiro slice](./docs/base-tecnica-vaga-facil.md)
+- [Material 06 — Refatoração, revisão técnica e integração controlada](./docs/06-refatoracao-revisao-tecnica-e-integracao-controlada.md)
+- [Material 07 — Da aplicação à API HTTP com NestJS](./docs/07-da-aplicacao-a-api-http-com-nestjs(1).md)
+- [Material 08 — Verificação integrada do backend e preparação para persistência real](./docs/08-verificacao-integrada-do-backend-e-preparacao-para-persistencia-real.md)
+- [Material 09 — Persistência real com PostgreSQL e TypeORM no NestJS](./docs/09-persistencia-real-com-postgresql-e-typeorm-no-nestjs.md)
+- [Artefatos da etapa 06](./docs/etapa-06)
+- [Artefatos da etapa 07](./docs/etapa-07)
+- [Artefatos da etapa 08](./docs/etapa-08)
+- [Artefatos da etapa 09](./docs/etapa-09)
 
-O relatório registra as versões e verificações executadas, as responsabilidades arquiteturais planejadas e as decisões ainda pendentes. A URL de `origin` está configurada para `https://github.com/Vagaacil/vaga-facil.git`; isso não comprova publicação das alterações locais.
+O projeto inclui documentação do processo de refatoração, revisão técnica, entrega da fronteira HTTP com NestJS, validação integrada do backend e adoção da persistência real com PostgreSQL e TypeORM.
