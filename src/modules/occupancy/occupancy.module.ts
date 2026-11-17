@@ -19,10 +19,12 @@ import { InMemoryParkingOperationsRepository } from './repositories/in-memory-pa
 import { TypeOrmParkingOperationsRepository } from './repositories/typeorm-parking-operations.repository.js';
 import { PARKING_STAY_REPOSITORY } from './repositories/parking-stay.repository.interface.js';
 import { InMemoryParkingStayRepository } from './repositories/in-memory-parking-stay.repository.js';
+import { TypeOrmParkingStayRepository } from './repositories/typeorm-parking-stay.repository.js';
 import { ParkingOperationsService } from './services/parking-operations.service.js';
 import { ParkingStayService } from './services/parking-stay.service.js';
 import { RegistrarEntradaHandler } from './services/registrar-entrada.handler.js';
 import { PaymentsModule } from '../payments/payments.module.js';
+import { ParkingStayRecord } from './entities/parking-stay.persistence.entity.js';
 
 const typeOrmEnabled = process.env.DB_ENABLED === 'true';
 
@@ -37,6 +39,7 @@ const typeOrmEnabled = process.env.DB_ENABLED === 'true';
           Vaga,
           TarifaVigente,
           RegistroDePermanencia,
+          ParkingStayRecord,
         ]),
       ]
     : [PaymentsModule],
@@ -56,7 +59,7 @@ const typeOrmEnabled = process.env.DB_ENABLED === 'true';
     { provide: CLOCK_PORT, useClass: SystemClock },
     {
       provide: PARKING_STAY_REPOSITORY,
-      useClass: InMemoryParkingStayRepository,
+      useClass: typeOrmEnabled ? TypeOrmParkingStayRepository : InMemoryParkingStayRepository,
     },
     {
       provide: PARKING_OPERATIONS_REPOSITORY,
