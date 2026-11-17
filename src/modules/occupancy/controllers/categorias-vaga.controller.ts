@@ -1,4 +1,6 @@
 import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { AssociarCategoriaVagaDto } from '../dto/associar-categoria-vaga.dto.js';
+import { CriarCategoriaVagaDto } from '../dto/criar-categoria-vaga.dto.js';
 import { ParkingOperationsService } from '../services/parking-operations.service.js';
 
 @Controller('patios/:patioId')
@@ -6,15 +8,12 @@ export class CategoriasVagaController {
   constructor(private readonly service: ParkingOperationsService) {}
 
   @Post('categorias-vaga')
-  criar(
-    @Param('patioId') patioId: string,
-    @Body() body: Record<string, unknown>,
-  ) {
+  criar(@Param('patioId') patioId: string, @Body() dto: CriarCategoriaVagaDto) {
     return this.service.criarCategoria(
       patioId,
-      body?.codigo,
-      body?.descricao,
-      body?.tiposVeiculoCompativeis,
+      dto.codigo,
+      dto.descricao,
+      dto.tiposVeiculoCompativeis,
     );
   }
 
@@ -27,8 +26,8 @@ export class CategoriasVagaController {
   associar(
     @Param('patioId') patioId: string,
     @Param('vagaId') vagaId: string,
-    @Body() body: Record<string, unknown>,
+    @Body() dto: AssociarCategoriaVagaDto,
   ) {
-    return this.service.associarCategoria(patioId, vagaId, body?.categoria);
+    return this.service.associarCategoria(patioId, vagaId, dto.categoria);
   }
 }

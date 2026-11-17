@@ -7,6 +7,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { PatioNaoEncontradoError } from '../domain/parking-operations.errors.js';
+import { DefinirTarifaDto } from '../dto/definir-tarifa.dto.js';
 import { ParkingOperationsService } from '../services/parking-operations.service.js';
 
 @Controller('patios/:patioId')
@@ -16,15 +17,15 @@ export class TarifasController {
   @Post('tarifas')
   async definir(
     @Param('patioId') patioId: string,
-    @Body() body: Record<string, unknown>,
+    @Body() dto: DefinirTarifaDto,
   ) {
     try {
       return await this.service.definirTarifa(
         patioId,
-        body?.valorPorHora,
-        body?.fracaoMinutos,
-        body?.toleranciaMinutos,
-        body?.vigenteDesde,
+        dto.valorPorHora,
+        dto.fracaoMinutos,
+        dto.toleranciaMinutos,
+        dto.vigenteDesde,
       );
     } catch (error) {
       this.mapPatioError(error);

@@ -4,13 +4,14 @@ Backend da plataforma Vaga Fácil, um sistema para apoiar a gestão de estaciona
 
 ## Estado atual
 
-Este repositório contém a base técnica em NestJS 12, TypeScript e ESM, com implementações iniciais de cadastro de Pátio e Vaga, definição de Tarifa Vigente e registro de entrada. Esses fluxos usam repositórios InMemory por padrão e adaptador TypeORM quando `DB_ENABLED=true`. O checkout legado e a confirmação de reservas existentes foram preservados.
+Este repositório contém os fluxos dos casos de uso UC01–UC10 em NestJS 12, TypeScript e ESM: cadastro de Motorista/Veículo, Pátio/Vaga, tarifa, entrada/saída, reservas, categorias, impedimentos e indicadores. Os comandos HTTP delegam aos serviços de aplicação; os repositórios InMemory são usados por padrão e os adaptadores TypeORM são selecionados quando `DB_ENABLED=true`. O checkout legado e a confirmação de reservas existentes foram preservados.
 
 | Área | Situação |
 | --- | --- |
 | Framework e linguagem | NestJS 12 e TypeScript configurados em ESM |
 | Gerenciador de pacotes | pnpm 12.15.0, fixado em `package.json` |
 | Testes | Vitest para testes unitários e e2e |
+| Validacao HTTP | DTOs com `class-validator` e `ValidationPipe` global (`whitelist` e `transform`) |
 | Endpoints | `GET /`, cadastro de Pátio/Vaga, tarifa, entrada, confirmação de reserva e checkout legado |
 | Banco de dados | PostgreSQL via TypeORM quando `DB_ENABLED=true` |
 | Containers e migrações | Docker Compose disponível; schema sincronizado pelo TypeORM fora de produção |
@@ -76,10 +77,11 @@ pnpm build
 pnpm lint
 ```
 
-Os testes Vitest cobrem o endpoint raiz, os protótipos existentes e os fluxos iniciais de cadastro, tarifa e entrada.
+Os testes Vitest cobrem regras de aplicação, a fronteira HTTP com serviços simulados e fluxos integrados pelo `AppModule` real com repositórios em memória. A verificação atual passou em 8 arquivos e 45 testes; isso não comprova integração com PostgreSQL.
 
 ## Documentação
 
 - [Visão geral do sistema e do primeiro slice](./docs/visao-geral.md)
+- [Materiais 07 e 08 por caso de uso](./docs/casos-de-uso/)
 
 As evidências de Issues, branches, Pull Requests e histórico devem ser confirmadas no GitHub. A URL de `origin` não comprova publicação das alterações locais.

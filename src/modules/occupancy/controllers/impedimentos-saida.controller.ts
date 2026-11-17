@@ -1,4 +1,5 @@
 import { Body, Controller, Param, Post } from '@nestjs/common';
+import { ResolverImpedimentoSaidaDto } from '../dto/resolver-impedimento-saida.dto.js';
 import { ParkingOperationsService } from '../services/parking-operations.service.js';
 
 @Controller('permanencias')
@@ -8,13 +9,13 @@ export class ImpedimentosSaidaController {
   @Post(':registroId/resolver-impedimento')
   resolver(
     @Param('registroId') registroId: string,
-    @Body() body: Record<string, unknown>,
+    @Body() dto: ResolverImpedimentoSaidaDto,
   ) {
     return this.service.resolverImpedimentoSaida(
       registroId,
-      body?.decisao,
-      body?.justificativa,
-      body?.operadorId,
+      dto.decisao,
+      dto.justificativa,
+      dto.operadorId,
     );
   }
 }

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Server } from 'node:http';
 import request from 'supertest';
 import { AppModule } from '../src/app.module.js';
@@ -14,6 +14,12 @@ describe('AppController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+        transform: true,
+      }),
+    );
     await app.init();
   });
 
@@ -91,6 +97,14 @@ describe('AppController (e2e)', () => {
       .post(`/patios/${patioId}/tarifas`)
       .send({ valorPorHora: 18 })
       .expect(201);
+    await request(app.getHttpServer())
+      .get(`/patios/${patioId}/tarifa-vigente`)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body as { patioId: string; valorPorHora: number }).toMatchObject(
+          { patioId, valorPorHora: 18 },
+        );
+      });
 
     const entryResponse = await request(app.getHttpServer())
       .post(`/patios/${patioId}/permanencias`)
@@ -263,6 +277,14 @@ describe('AppController (e2e)', () => {
       })
       .expect(201);
     await request(app.getHttpServer())
+      .get(`/patios/${patioId}/categorias-vaga`)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body as Array<{ codigo: string }>).toContainEqual(
+          expect.objectContaining({ codigo: 'MOTO' }),
+        );
+      });
+    await request(app.getHttpServer())
       .patch(`/patios/${patioId}/vagas/${motoSpotId}/categoria`)
       .send({ categoria: 'MOTO' })
       .expect(200);
@@ -332,6 +354,66 @@ describe('AppController (e2e)', () => {
           vagasLivres: 2,
         });
       });
+  });
+
+  it('rejects malformed request bodies at the HTTP boundary across use cases', async () => {
+    await request(app.getHttpServer())
+      .post('/motoristas')
+      .send({ nome: ' ', email: 'not-an-email' })
+      .expect(400);
+
+    await request(app.getHttpServer())
+      .post('/motoristas/not-a-driver/veiculos')
+      .send({ placa: 123 })
+      .expect(400);
+
+    await request(app.getHttpServer())
+      .post('/reservas')
+      .send({ patioId: 'p', motoristaId: 'm' })
+      .expect(400);
+
+    await request(app.getHttpServer())
+      .post('/patios')
+      .send({ nome: '' })
+      .expect(400);
+
+    await request(app.getHttpServer())
+      .post('/patios/not-a-patio/vagas')
+      .send({ codigo: ' ' })
+      .expect(400);
+
+    await request(app.getHttpServer())
+      .post('/patios/not-a-patio/tarifas')
+      .send({ valorPorHora: '18' })
+      .expect(400);
+
+    await request(app.getHttpServer())
+      .post('/patios/not-a-patio/categorias-vaga')
+      .send({
+        codigo: 'MOTO',
+        descricao: 'Motocicletas',
+        tiposVeiculoCompativeis: 'MOTO',
+      })
+      .expect(400);
+
+    await request(app.getHttpServer())
+      .patch('/patios/not-a-patio/vagas/not-a-spot/categoria')
+      .send({ categoria: '' })
+      .expect(400);
+
+    await request(app.getHttpServer())
+      .post('/patios/not-a-patio/permanencias')
+      .send({})
+      .expect(400);
+
+    await request(app.getHttpServer())
+      .post('/permanencias/not-a-stay/resolver-impedimento')
+      .send({
+        decisao: 'UNKNOWN',
+        justificativa: '',
+        operadorId: '',
+      })
+      .expect(400);
   });
 
   afterEach(async () => {
