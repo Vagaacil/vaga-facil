@@ -1,4 +1,6 @@
 import { Body, Controller, Param, Post } from '@nestjs/common';
+import { CadastrarMotoristaDto } from '../dto/cadastrar-motorista.dto.js';
+import { CadastrarVeiculoDto } from '../dto/cadastrar-veiculo.dto.js';
 import { OrdersService } from '../services/orders.service.js';
 
 @Controller('motoristas')
@@ -6,15 +8,15 @@ export class MotoristasController {
   constructor(private readonly service: OrdersService) {}
 
   @Post()
-  cadastrar(@Body() body: Record<string, unknown>) {
-    return this.service.cadastrarMotorista(body?.nome, body?.email);
+  cadastrar(@Body() dto: CadastrarMotoristaDto) {
+    return this.service.cadastrarMotorista(dto.nome, dto.email);
   }
 
   @Post(':motoristaId/veiculos')
   cadastrarVeiculo(
     @Param('motoristaId') motoristaId: string,
-    @Body() body: Record<string, unknown>,
+    @Body() dto: CadastrarVeiculoDto,
   ) {
-    return this.service.cadastrarVeiculo(motoristaId, body?.placa, body?.tipo);
+    return this.service.cadastrarVeiculo(motoristaId, dto.placa, dto.tipo);
   }
 }

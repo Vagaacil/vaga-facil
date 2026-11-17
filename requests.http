@@ -26,6 +26,9 @@ Content-Type: application/json
   "categoria": "PADRAO"
 }
 
+### List patio parking spots (replace the patio ID)
+GET http://localhost:3002/patios/{{patioId}}/vagas
+
 ### Define the current tariff (replace the patio ID)
 POST http://localhost:3002/patios/{{patioId}}/tarifas
 Content-Type: application/json
@@ -35,6 +38,9 @@ Content-Type: application/json
   "fracaoMinutos": 60,
   "toleranciaMinutos": 0
 }
+
+### Query the current tariff (replace the patio ID)
+GET http://localhost:3002/patios/{{patioId}}/tarifa-vigente
 
 ### Register vehicle entry (replace the patio ID)
 POST http://localhost:3002/patios/{{patioId}}/permanencias
@@ -86,6 +92,17 @@ Content-Type: application/json
   "tiposVeiculoCompativeis": ["MOTO"]
 }
 
+### List patio spot categories (replace the patio ID)
+GET http://localhost:3002/patios/{{patioId}}/categorias-vaga
+
+### Associate a category with a spot (replace both IDs)
+PATCH http://localhost:3002/patios/{{patioId}}/vagas/{{vagaId}}/categoria
+Content-Type: application/json
+
+{
+  "categoria": "MOTO"
+}
+
 ### Reserve a spot (replace the patio, driver and vehicle IDs)
 POST http://localhost:3002/reservas
 Content-Type: application/json
@@ -103,3 +120,15 @@ Content-Type: application/json
 
 ### Query network-wide occupancy indicators
 GET http://localhost:3002/indicadores/ocupacao
+
+### Query patio occupancy indicators (replace the patio ID)
+GET http://localhost:3002/patios/{{patioId}}/indicadores
+
+### Invalid driver DTO (expect 400 Bad Request)
+POST http://localhost:3002/motoristas
+Content-Type: application/json
+
+{
+  "nome": " ",
+  "email": "invalid"
+}

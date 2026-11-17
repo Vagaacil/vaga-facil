@@ -7,6 +7,9 @@ import {
   Post,
   Res,
 } from '@nestjs/common';
+import { CriarPatioDto } from '../dto/criar-patio.dto.js';
+import { CriarVagaDto } from '../dto/criar-vaga.dto.js';
+import { RegistrarEntradaDto } from '../dto/registrar-entrada.dto.js';
 import { ParkingOperationsService } from '../services/parking-operations.service.js';
 import {
   PatioLotadoError,
@@ -19,21 +22,17 @@ export class PatiosController {
   constructor(private readonly service: ParkingOperationsService) {}
 
   @Post()
-  criar(@Body() body: Record<string, unknown>) {
-    return this.service.criarPatio(body?.nome);
+  criar(@Body() dto: CriarPatioDto) {
+    return this.service.criarPatio(dto.nome);
   }
 
   @Post(':patioId/vagas')
   async criarVaga(
     @Param('patioId') patioId: string,
-    @Body() body: Record<string, unknown>,
+    @Body() dto: CriarVagaDto,
   ) {
     try {
-      return await this.service.criarVaga(
-        patioId,
-        body?.codigo,
-        body?.categoria,
-      );
+      return await this.service.criarVaga(patioId, dto.codigo, dto.categoria);
     } catch (error) {
       this.mapPatioError(error);
     }
@@ -51,20 +50,14 @@ export class PatiosController {
   @Post(':patioId/permanencias')
   async registrarEntrada(
     @Param('patioId') patioId: string,
-    @Body() body: Record<string, unknown>,
+    @Body() dto: RegistrarEntradaDto,
     @Res({ passthrough: true })
     response: { setHeader(name: string, value: string): void },
   ) {
-    if (typeof body?.placa !== 'string') {
-      throw new HttpException(
-        { code: 'PLACA_INVALIDA', message: 'A placa é obrigatória.' },
-        400,
-      );
-    }
     try {
       const resultado = await this.service.registrarEntrada({
         patioId,
-        placa: body.placa,
+        placa: dto.placa,
       });
       response.setHeader(
         'Location',
