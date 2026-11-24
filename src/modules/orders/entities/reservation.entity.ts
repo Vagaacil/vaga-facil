@@ -1,6 +1,7 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 import { ReservationStatusEnum } from '../../../common/enums/reservation-status.enum.js';
 import { ReservationAlreadyConfirmedException } from '../../../common/exceptions/reservation-already-confirmed.exception.js';
+import { ReservationAlreadyCancelledException } from '../../../common/exceptions/reservation-already-cancelled.exception.js';
 
 @Entity({ name: 'reservations' })
 export class Reservation {
@@ -62,5 +63,15 @@ export class Reservation {
       throw new ReservationAlreadyConfirmedException();
     }
     this.status = ReservationStatusEnum.CONFIRMED;
+  }
+
+  cancelReservation(): void {
+    if (this.status === ReservationStatusEnum.CANCELLED) {
+      throw new ReservationAlreadyCancelledException();
+    }
+    if (this.status === ReservationStatusEnum.COMPLETED) {
+      throw new Error('A completed reservation cannot be cancelled.');
+    }
+    this.status = ReservationStatusEnum.CANCELLED;
   }
 }

@@ -59,6 +59,18 @@ describe('AppController (e2e)', () => {
       });
   });
 
+  it('/orders/reservation-1/cancel (POST)', () => {
+    return request(app.getHttpServer())
+      .post('/orders/reservation-1/cancel')
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body).toMatchObject({
+          reservationId: 'reservation-1',
+          reservationStatus: 'cancelled',
+        });
+      });
+  });
+
   afterEach(async () => {
     await app.close();
   });

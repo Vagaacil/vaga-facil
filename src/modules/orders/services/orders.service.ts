@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfirmOrderResponseDto } from '../dto/confirm-order-response.dto.js';
+import { CancelReservationResponseDto } from '../dto/cancel-reservation-response.dto.js';
 import { ReservationNotFoundException } from '../../../common/exceptions/reservation-not-found.exception.js';
 import {
   ORDERS_REPOSITORY,
@@ -24,6 +25,24 @@ export class OrdersService {
     await this.ordersRepository.save(reservation);
 
     return new ConfirmOrderResponseDto(
+      reservation.reservationId,
+      reservation.getStatus(),
+    );
+  }
+
+  async cancelReservation(
+    reservationId: string,
+  ): Promise<CancelReservationResponseDto> {
+    const reservation = await this.ordersRepository.findById(reservationId);
+
+    if (!reservation) {
+      throw new ReservationNotFoundException(reservationId);
+    }
+
+    reservation.cancelReservation();
+    await this.ordersRepository.save(reservation);
+
+    return new CancelReservationResponseDto(
       reservation.reservationId,
       reservation.getStatus(),
     );

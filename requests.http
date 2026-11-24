@@ -8,3 +8,7 @@ Content-Type: application/json
 ### Checkout parking stay
 POST http://localhost:3002/parking-stays/stay-1/checkout
 Content-Type: application/json
+
+### Cancel reservation
+POST http://localhost:3002/orders/reservation-1/cancel
+Content-Type: application/json
