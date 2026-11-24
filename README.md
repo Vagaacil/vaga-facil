@@ -73,11 +73,14 @@ E execute a aplicação normalmente com `pnpm start:dev`.
 ```bash
 pnpm test
 pnpm test:e2e
+pnpm test:integration
+pnpm test:seed
+pnpm test:http
 pnpm build
 pnpm lint
 ```
 
-Os testes Vitest cobrem regras de aplicação, a fronteira HTTP com serviços simulados e fluxos integrados pelo `AppModule` real com repositórios em memória. A verificação atual passou em 8 arquivos e 45 testes; isso não comprova integração com PostgreSQL.
+Os testes Vitest cobrem regras de aplicação, fronteira HTTP, persistência com PostgreSQL isolado e concorrência. A verificação final passou em 10 arquivos e 53 testes.
 
 ## Documentação
 

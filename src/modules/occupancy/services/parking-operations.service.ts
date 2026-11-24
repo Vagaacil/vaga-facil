@@ -76,7 +76,19 @@ export class ParkingOperationsService implements OnModuleInit, OnModuleDestroy {
     if (typeof name !== 'string' || name.trim().length === 0) {
       throw new BadRequestException('O nome do pátio é obrigatório.');
     }
-    return this.repository.createPatio(new Patio(randomUUID(), name.trim()));
+    try {
+      return await this.repository.createPatio(
+        new Patio(randomUUID(), name.trim()),
+      );
+    } catch (error) {
+      if (error instanceof Error && error.message === 'PATIO_DUPLICADO') {
+        throw new ConflictException({
+          code: 'PATIO_DUPLICADO',
+          message: 'Já existe um Pátio com este identificador.',
+        });
+      }
+      throw error;
+    }
   }
 
   async criarVaga(
@@ -90,9 +102,19 @@ export class ParkingOperationsService implements OnModuleInit, OnModuleDestroy {
     if (typeof categoria !== 'string' || categoria.trim().length === 0) {
       throw new BadRequestException('A categoria da vaga é inválida.');
     }
-    return this.repository.createVaga(
-      new Vaga(randomUUID(), patioId, codigo.trim(), categoria.trim()),
-    );
+    try {
+      return await this.repository.createVaga(
+        new Vaga(randomUUID(), patioId, codigo.trim(), categoria.trim()),
+      );
+    } catch (error) {
+      if (error instanceof Error && error.message === 'VAGA_DUPLICADA') {
+        throw new ConflictException({
+          code: 'VAGA_DUPLICADA',
+          message: 'Já existe uma Vaga com este código no Pátio.',
+        });
+      }
+      throw error;
+    }
   }
 
   async listarVagas(patioId: string): Promise<Vaga[]> {
@@ -119,17 +141,27 @@ export class ParkingOperationsService implements OnModuleInit, OnModuleDestroy {
         'tiposVeiculoCompativeis deve conter somente textos.',
       );
     }
-    return this.repository.criarCategoria(
-      new CategoriaDeVaga(
-        randomUUID(),
-        patioId,
-        codigo.trim().toUpperCase(),
-        descricao.trim(),
-        tiposVeiculoCompativeis.map((tipo: string) =>
-          tipo.trim().toUpperCase(),
+    try {
+      return await this.repository.criarCategoria(
+        new CategoriaDeVaga(
+          randomUUID(),
+          patioId,
+          codigo.trim().toUpperCase(),
+          descricao.trim(),
+          tiposVeiculoCompativeis.map((tipo: string) =>
+            tipo.trim().toUpperCase(),
+          ),
         ),
-      ),
-    );
+      );
+    } catch (error) {
+      if (error instanceof Error && error.message === 'CATEGORIA_DUPLICADA') {
+        throw new ConflictException({
+          code: 'CATEGORIA_DUPLICADA',
+          message: 'Já existe uma Categoria com este código no Pátio.',
+        });
+      }
+      throw error;
+    }
   }
 
   async listarCategorias(patioId: string): Promise<CategoriaDeVaga[]> {

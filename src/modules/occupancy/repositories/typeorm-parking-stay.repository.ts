@@ -18,7 +18,9 @@ export class TypeOrmParkingStayRepository implements IParkingStayRepository {
   }
 
   async save(parkingStay: ParkingStay): Promise<ParkingStay> {
-    const saved = await this.repository.save(ParkingStayRecord.fromDomain(parkingStay));
+    const saved = await this.repository.save(
+      ParkingStayRecord.fromDomain(parkingStay),
+    );
     return saved.toDomain();
   }
 }
