@@ -59,7 +59,9 @@ const typeOrmEnabled = process.env.DB_ENABLED === 'true';
     { provide: CLOCK_PORT, useClass: SystemClock },
     {
       provide: PARKING_STAY_REPOSITORY,
-      useClass: typeOrmEnabled ? TypeOrmParkingStayRepository : InMemoryParkingStayRepository,
+      useClass: typeOrmEnabled
+        ? TypeOrmParkingStayRepository
+        : InMemoryParkingStayRepository,
     },
     {
       provide: PARKING_OPERATIONS_REPOSITORY,
