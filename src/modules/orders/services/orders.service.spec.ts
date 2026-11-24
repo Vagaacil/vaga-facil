@@ -10,6 +10,8 @@ import {
   ORDERS_REPOSITORY,
 } from '../repositories/orders.repository.interface.js';
 import { OrdersService } from './orders.service.js';
+import { ParkingOperationsService } from '../../occupancy/services/parking-operations.service.js';
+import { CLOCK_PORT } from '../../occupancy/domain/clock.port.js';
 
 describe('OrdersService', () => {
   let ordersService: OrdersService;
@@ -23,6 +25,15 @@ describe('OrdersService', () => {
     const ordersRepositoryMock: Mocked<IOrdersRepository> = {
       findById: findByIdMock,
       save: saveMock,
+      criarMotorista: vi.fn(),
+      buscarMotorista: vi.fn(),
+      criarVeiculo: vi.fn(),
+      buscarVeiculo: vi.fn(),
+      criarReserva: vi.fn(),
+      buscarReserva: vi.fn(),
+      salvarReserva: vi.fn(),
+      buscarReservaAtivaDoVeiculo: vi.fn(),
+      listarReservasExpiradas: vi.fn(),
     };
 
     const module = await Test.createTestingModule({
@@ -32,6 +43,15 @@ describe('OrdersService', () => {
           provide: ORDERS_REPOSITORY,
           useValue: ordersRepositoryMock,
         },
+        {
+          provide: ParkingOperationsService,
+          useValue: {
+            verificarCompatibilidadeVeiculo: vi.fn(),
+            reterVaga: vi.fn(),
+            liberarRetencao: vi.fn(),
+          },
+        },
+        { provide: CLOCK_PORT, useValue: { agora: () => new Date() } },
       ],
     }).compile();
 

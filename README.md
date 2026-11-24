@@ -4,19 +4,18 @@ Backend da plataforma Vaga Fácil, um sistema para apoiar a gestão de estaciona
 
 ## Estado atual
 
-Este repositório contém a base técnica em NestJS 12, TypeScript e ESM. A aplicação expõe apenas o endpoint inicial `GET /`, que retorna `Hello World!`. Há protótipos de domínio e serviço para confirmação de reservas, além de uma entidade de pagamento, mas eles ainda não estão conectados à aplicação, não têm implementação concreta de persistência e não correspondem ao primeiro slice selecionado.
-
-O primeiro slice planejado é **registrar a saída de um veículo e calcular a tarifa**. O ator é o operador; o resultado esperado é encerrar a permanência, calcular a tarifa e liberar a vaga. A regra central identificada é a RN02, cujo cálculo pertence ao contexto de Ocupação e Acesso. Pagamentos, reservas, autenticação e administração ficam fora deste recorte. A implementação deste caso de uso não faz parte da preparação da base técnica.
+Este repositório contém os fluxos dos casos de uso UC01–UC10 em NestJS 12, TypeScript e ESM: cadastro de Motorista/Veículo, Pátio/Vaga, tarifa, entrada/saída, reservas, categorias, impedimentos e indicadores. Os comandos HTTP delegam aos serviços de aplicação; os repositórios InMemory são usados por padrão e os adaptadores TypeORM são selecionados quando `DB_ENABLED=true`. O checkout legado e a confirmação de reservas existentes foram preservados.
 
 | Área | Situação |
 | --- | --- |
 | Framework e linguagem | NestJS 12 e TypeScript configurados em ESM |
 | Gerenciador de pacotes | pnpm 12.15.0, fixado em `package.json` |
 | Testes | Vitest para testes unitários e e2e |
-| Endpoint funcional | Somente `GET /` do scaffold NestJS |
-| Banco de dados e persistência concreta | Ainda não configurados |
-| Containers e migrações | Ainda não configurados |
-| Primeiro slice de saída e tarifa | Planejado; ainda não implementado |
+| Validacao HTTP | DTOs com `class-validator` e `ValidationPipe` global (`whitelist` e `transform`) |
+| Endpoints | `GET /`, cadastro de Pátio/Vaga, tarifa, entrada, confirmação de reserva e checkout legado |
+| Banco de dados | PostgreSQL via TypeORM quando `DB_ENABLED=true` |
+| Containers e migrações | Docker Compose disponível; schema sincronizado pelo TypeORM fora de produção |
+| Checkout com pagamento obrigatório | Implementado em `POST /permanencias/:registroId/checkout` |
 | Porta HTTP | `PORT`, com padrão `3002` |
 
 ## Requisitos
@@ -36,8 +35,21 @@ Por padrão, a aplicação fica disponível em `http://localhost:3002`. Para usa
 ## Endpoints principais
 
 - `GET /` — retorno do scaffold inicial
+- `POST /patios` — cadastra Pátio (`{ "nome": "Pátio Central" }`)
+- `POST /patios/:patioId/vagas` — cadastra Vaga (`{ "codigo": "A-01" }`)
+- `GET /patios/:patioId/vagas` — lista as Vagas do Pátio
+- `POST /patios/:patioId/tarifas` — define Tarifa Vigente (`{ "valorPorHora": 18 }`)
+- `GET /patios/:patioId/tarifa-vigente` — consulta a tarifa aplicável
+- `POST /patios/:patioId/permanencias` — registra entrada (`{ "placa": "ABC-1234" }`)
+- `POST /permanencias/:registroId/checkout` — cobra a tarifa vigente e libera a vaga somente após aprovação
+- `POST /permanencias/:registroId/resolver-impedimento` — registra decisão auditada de portaria
+- `POST /motoristas` e `POST /motoristas/:motoristaId/veiculos` — cadastra Motorista e Veículo
+- `POST /patios/:patioId/categorias-vaga` — configura categoria e compatibilidade
+- `PATCH /patios/:patioId/vagas/:vagaId/categoria` — associa categoria à Vaga
+- `POST /reservas` e `POST /reservas/:reservaId/cancelar` — reserva/cancela Vaga por 15 minutos
+- `GET /indicadores/ocupacao` e `GET /patios/:patioId/indicadores` — consulta indicadores
 - `POST /orders/:reservationId/confirm` — confirma uma reserva e retorna o status atualizado
-- `POST /parking-stays/:parkingStayId/checkout` — encerra a permanência, calcula a tarifa e libera a vaga
+- `POST /parking-stays/:parkingStayId/checkout` — checkout legado mantido para compatibilidade
 
 ## Persistência com PostgreSQL
 
@@ -65,11 +77,11 @@ pnpm build
 pnpm lint
 ```
 
-Os testes existentes cobrem o endpoint raiz e o protótipo de confirmação de reservas. Eles não validam o futuro fluxo de saída e cálculo de tarifa.
+Os testes Vitest cobrem regras de aplicação, a fronteira HTTP com serviços simulados e fluxos integrados pelo `AppModule` real com repositórios em memória. A verificação atual passou em 8 arquivos e 45 testes; isso não comprova integração com PostgreSQL.
 
 ## Documentação
 
 - [Visão geral do sistema e do primeiro slice](./docs/visao-geral.md)
-- [Relatório da base técnica NestJS 12 e planejamento do primeiro slice](./docs/base-tecnica-vaga-facil.md)
+- [Materiais 07 e 08 por caso de uso](./docs/casos-de-uso/)
 
-O relatório registra as versões e verificações executadas, as responsabilidades arquiteturais planejadas e as decisões ainda pendentes. A URL de `origin` está configurada para `https://github.com/Vagaacil/vaga-facil.git`; isso não comprova publicação das alterações locais.
+As evidências de Issues, branches, Pull Requests e histórico devem ser confirmadas no GitHub. A URL de `origin` não comprova publicação das alterações locais.

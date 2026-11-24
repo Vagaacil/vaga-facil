@@ -9,6 +9,126 @@ Content-Type: application/json
 POST http://localhost:3002/parking-stays/stay-1/checkout
 Content-Type: application/json
 
-### Cancel reservation
-POST http://localhost:3002/orders/reservation-1/cancel
+### Create patio
+POST http://localhost:3002/patios
 Content-Type: application/json
+
+{
+  "nome": "Pátio Central"
+}
+
+### Create a parking spot (replace the patio ID)
+POST http://localhost:3002/patios/{{patioId}}/vagas
+Content-Type: application/json
+
+{
+  "codigo": "A-01",
+  "categoria": "PADRAO"
+}
+
+### List patio parking spots (replace the patio ID)
+GET http://localhost:3002/patios/{{patioId}}/vagas
+
+### Define the current tariff (replace the patio ID)
+POST http://localhost:3002/patios/{{patioId}}/tarifas
+Content-Type: application/json
+
+{
+  "valorPorHora": 18,
+  "fracaoMinutos": 60,
+  "toleranciaMinutos": 0
+}
+
+### Query the current tariff (replace the patio ID)
+GET http://localhost:3002/patios/{{patioId}}/tarifa-vigente
+
+### Register vehicle entry (replace the patio ID)
+POST http://localhost:3002/patios/{{patioId}}/permanencias
+Content-Type: application/json
+
+{
+  "placa": "ABC-1234"
+}
+
+### Complete vehicle exit after payment approval (replace the stay ID)
+POST http://localhost:3002/permanencias/{{registroId}}/checkout
+Content-Type: application/json
+
+### Resolve an exit impediment (replace the stay ID)
+POST http://localhost:3002/permanencias/{{registroId}}/resolver-impedimento
+Content-Type: application/json
+
+{
+  "decisao": "MANTER_RETIDO",
+  "justificativa": "Aguardando verificação do operador",
+  "operadorId": "operador-1"
+}
+
+### Register a driver
+POST http://localhost:3002/motoristas
+Content-Type: application/json
+
+{
+  "nome": "Ana Silva",
+  "email": "ana@example.com"
+}
+
+### Register a vehicle (replace the driver ID)
+POST http://localhost:3002/motoristas/{{motoristaId}}/veiculos
+Content-Type: application/json
+
+{
+  "placa": "ABC-1234",
+  "tipo": "CARRO"
+}
+
+### Create a spot category (replace the patio ID)
+POST http://localhost:3002/patios/{{patioId}}/categorias-vaga
+Content-Type: application/json
+
+{
+  "codigo": "MOTO",
+  "descricao": "Vaga para motocicletas",
+  "tiposVeiculoCompativeis": ["MOTO"]
+}
+
+### List patio spot categories (replace the patio ID)
+GET http://localhost:3002/patios/{{patioId}}/categorias-vaga
+
+### Associate a category with a spot (replace both IDs)
+PATCH http://localhost:3002/patios/{{patioId}}/vagas/{{vagaId}}/categoria
+Content-Type: application/json
+
+{
+  "categoria": "MOTO"
+}
+
+### Reserve a spot (replace the patio, driver and vehicle IDs)
+POST http://localhost:3002/reservas
+Content-Type: application/json
+
+{
+  "patioId": "{{patioId}}",
+  "motoristaId": "{{motoristaId}}",
+  "veiculoId": "{{veiculoId}}",
+  "categoria": "PADRAO"
+}
+
+### Cancel a reservation (replace the reservation ID)
+POST http://localhost:3002/reservas/{{reservaId}}/cancelar
+Content-Type: application/json
+
+### Query network-wide occupancy indicators
+GET http://localhost:3002/indicadores/ocupacao
+
+### Query patio occupancy indicators (replace the patio ID)
+GET http://localhost:3002/patios/{{patioId}}/indicadores
+
+### Invalid driver DTO (expect 400 Bad Request)
+POST http://localhost:3002/motoristas
+Content-Type: application/json
+
+{
+  "nome": " ",
+  "email": "invalid"
+}
