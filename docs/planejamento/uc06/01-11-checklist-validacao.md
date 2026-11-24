@@ -1,0 +1,22 @@
+# Artefato 11 — Checklist de validação
+
+- [x] Issue principal possui objetivo, contexto, referência, requisitos, Sub-Issues, aceite e dependências.
+- [x] Foram planejadas pelo menos cinco Sub-Issues tecnicamente justificáveis.
+- [x] Critérios de aceite são objetivos em termos de evidenciação futura.
+- [x] Dependências foram mapeadas sem ciclo conhecido.
+- [x] Labels foram planejadas por domínio, tipo, camada e prioridade.
+- [x] GitHub Project especifica exatamente cinco estados.
+- [x] Estados iniciais são predominantemente Backlog por falta de prontidão documentada.
+- [x] Requisitos confirmados possuem rastreabilidade.
+- [x] Lacunas da especificação estão claramente apontadas.
+- [x] Não foram criadas tarefas apenas para separar RED/GREEN.
+- [x] Nenhum código-fonte foi implementado neste planejamento.
+- [x] Nenhuma branch, commit, Pull Request ou merge foi criado.
+- [ ] Campos obrigatórios do Pátio foram confirmados pela equipe.
+- [ ] Campos obrigatórios das Vagas foram confirmados pela equipe.
+- [ ] Fluxo principal detalhado foi confirmado.
+- [ ] Fluxos alternativos e exceções foram confirmados.
+- [ ] Regras de negócio foram confirmadas e numeradas.
+- [ ] Comportamento de autorização foi confirmado.
+- [ ] Contrato HTTP final foi aprovado.
+- [ ] Estratégia de persistência foi aprovada pela equipe.

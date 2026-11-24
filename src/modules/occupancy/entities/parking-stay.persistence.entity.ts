@@ -5,22 +5,22 @@ import { ParkingStay } from './parking-stay.entity.js';
 @Entity({ name: 'legacy_parking_stays' })
 export class ParkingStayRecord {
   @PrimaryColumn({ type: 'varchar' })
-  public parkingStayId: string;
+  public parkingStayId!: string;
 
   @Column({ type: 'varchar' })
-  public vehiclePlate: string;
+  public vehiclePlate!: string;
 
   @Column({ type: 'varchar' })
-  public parkingSpotId: string;
+  public parkingSpotId!: string;
 
   @Column({ type: 'timestamp with time zone' })
-  public startedAt: Date;
+  public startedAt!: Date;
 
   @Column({ type: 'double precision' })
-  public hourlyRate: number;
+  public hourlyRate!: number;
 
   @Column({ type: 'varchar', default: ParkingStayStatusEnum.OPEN })
-  public status: ParkingStayStatusEnum;
+  public status!: ParkingStayStatusEnum;
 
   @Column({ type: 'timestamp with time zone', nullable: true })
   public endedAt?: Date;
@@ -32,7 +32,7 @@ export class ParkingStayRecord {
     type: 'timestamp with time zone',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  public createdAt: Date;
+  public createdAt!: Date;
 
   static fromDomain(parkingStay: ParkingStay): ParkingStayRecord {
     const record = new ParkingStayRecord();

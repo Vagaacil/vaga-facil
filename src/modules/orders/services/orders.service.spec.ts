@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { Test } from '@nestjs/testing';
 import { ReservationStatusEnum } from '../../../common/enums/reservation-status.enum.js';
 import { ReservationAlreadyConfirmedException } from '../../../common/exceptions/reservation-already-confirmed.exception.js';
+import { ReservationAlreadyCancelledException } from '../../../common/exceptions/reservation-already-cancelled.exception.js';
 import { ReservationNotFoundException } from '../../../common/exceptions/reservation-not-found.exception.js';
 import { Reservation } from '../entities/reservation.entity.js';
 import {
@@ -98,6 +99,40 @@ describe('OrdersService', () => {
 
     await expect(ordersService.confirmOrder('1')).rejects.toThrow(
       ReservationAlreadyConfirmedException,
+    );
+  });
+
+  it('cancels a pending reservation', async () => {
+    const reservation = new Reservation(
+      '1',
+      'spot-1',
+      'user-1',
+      new Date(),
+      new Date(),
+    );
+    findByIdMock.mockResolvedValue(reservation);
+    saveMock.mockResolvedValue(reservation);
+
+    const response = await ordersService.cancelReservation('1');
+
+    expect(reservation.getStatus()).toBe(ReservationStatusEnum.CANCELLED);
+    expect(response.reservationStatus).toBe(ReservationStatusEnum.CANCELLED);
+    expect(saveMock).toHaveBeenCalledWith(reservation);
+  });
+
+  it('throws when the reservation has already been cancelled', async () => {
+    const reservation = new Reservation(
+      '1',
+      'spot-1',
+      'user-1',
+      new Date(),
+      new Date(),
+      ReservationStatusEnum.CANCELLED,
+    );
+    findByIdMock.mockResolvedValue(reservation);
+
+    await expect(ordersService.cancelReservation('1')).rejects.toThrow(
+      ReservationAlreadyCancelledException,
     );
   });
 });
