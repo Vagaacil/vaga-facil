@@ -356,6 +356,88 @@ describe('AppController (e2e)', () => {
       });
   });
 
+  it('applies UC01, UC06 and UC08 duplicate conflict decisions at the HTTP boundary', async () => {
+    await request(app.getHttpServer())
+      .post('/motoristas')
+      .send({ nome: 'Ana Duplicada', email: 'duplicada@example.com' })
+      .expect(201);
+
+    await request(app.getHttpServer())
+      .post('/motoristas')
+      .send({ nome: 'Outra Ana', email: 'DUPLICADA@example.com' })
+      .expect(409)
+      .expect(({ body }) => {
+        expect(body as { code: string }).toMatchObject({
+          code: 'MOTORISTA_DUPLICADO',
+        });
+      });
+
+    const motorista = await request(app.getHttpServer())
+      .post('/motoristas')
+      .send({ nome: 'Motorista Veículo', email: 'veiculo@example.com' })
+      .expect(201);
+    const motoristaId = (motorista.body as { motoristaId: string }).motoristaId;
+
+    await request(app.getHttpServer())
+      .post(`/motoristas/${motoristaId}/veiculos`)
+      .send({ placa: 'ABC-1234', tipo: 'CARRO' })
+      .expect(201);
+
+    await request(app.getHttpServer())
+      .post(`/motoristas/${motoristaId}/veiculos`)
+      .send({ placa: 'ABC1234', tipo: 'MOTO' })
+      .expect(409)
+      .expect(({ body }) => {
+        expect(body as { code: string }).toMatchObject({
+          code: 'VEICULO_DUPLICADO',
+        });
+      });
+
+    const patio = await request(app.getHttpServer())
+      .post('/patios')
+      .send({ nome: 'Pátio Regras' })
+      .expect(201);
+    const patioId = (patio.body as { patioId: string }).patioId;
+
+    await request(app.getHttpServer())
+      .post(`/patios/${patioId}/vagas`)
+      .send({ codigo: 'DUP-01', categoria: 'PADRAO' })
+      .expect(201);
+
+    await request(app.getHttpServer())
+      .post(`/patios/${patioId}/vagas`)
+      .send({ codigo: 'DUP-01', categoria: 'PADRAO' })
+      .expect(409)
+      .expect(({ body }) => {
+        expect(body as { code: string }).toMatchObject({
+          code: 'VAGA_DUPLICADA',
+        });
+      });
+
+    await request(app.getHttpServer())
+      .post(`/patios/${patioId}/categorias-vaga`)
+      .send({
+        codigo: 'MOTO',
+        descricao: 'Motocicletas',
+        tiposVeiculoCompativeis: ['MOTO'],
+      })
+      .expect(201);
+
+    await request(app.getHttpServer())
+      .post(`/patios/${patioId}/categorias-vaga`)
+      .send({
+        codigo: 'MOTO',
+        descricao: 'Categoria duplicada',
+        tiposVeiculoCompativeis: ['MOTO'],
+      })
+      .expect(409)
+      .expect(({ body }) => {
+        expect(body as { code: string }).toMatchObject({
+          code: 'CATEGORIA_DUPLICADA',
+        });
+      });
+  });
+
   it('rejects malformed request bodies at the HTTP boundary across use cases', async () => {
     await request(app.getHttpServer())
       .post('/motoristas')
