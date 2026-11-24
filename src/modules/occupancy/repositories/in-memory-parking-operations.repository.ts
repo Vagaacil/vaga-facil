@@ -40,6 +40,32 @@ export class InMemoryParkingOperationsRepository implements ParkingOperationsRep
     return Promise.resolve(patio);
   }
 
+  listPatios(
+    page: number,
+    limit: number,
+  ): Promise<{
+    items: Patio[];
+    page: number;
+    limit: number;
+    total: number;
+  }> {
+    const collator = new Intl.Collator('pt-BR');
+    const items = [...this.patios.values()].sort((left, right) => {
+      const nameComparison = collator.compare(left.nome, right.nome);
+      return nameComparison !== 0
+        ? nameComparison
+        : collator.compare(left.patioId, right.patioId);
+    });
+    const total = items.length;
+    const offset = (page - 1) * limit;
+    return Promise.resolve({
+      items: items.slice(offset, offset + limit),
+      page,
+      limit,
+      total,
+    });
+  }
+
   buscarCategoria(
     patioId: string,
     codigo: string,

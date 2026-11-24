@@ -16,7 +16,7 @@
     "start:prod": "node dist/main.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" vitest.config.ts --fix",
     "test": "vitest run",
-    "test:integration": "vitest run test/postgresql.integration.e2e-spec.ts",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
     "test:seed": "bash scripts/seed-scenarios.sh",
     "test:http": "bash scripts/verify-http-complete.sh",
     "test:watch": "vitest",

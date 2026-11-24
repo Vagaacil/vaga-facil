@@ -5,11 +5,13 @@ import {
   HttpException,
   Param,
   Post,
+  Query,
   Res,
 } from '@nestjs/common';
 import { CriarPatioDto } from '../dto/criar-patio.dto.js';
 import { CriarVagaDto } from '../dto/criar-vaga.dto.js';
 import { RegistrarEntradaDto } from '../dto/registrar-entrada.dto.js';
+import { ListarPatiosQueryDto } from '../dto/listar-patios-query.dto.js';
 import { ParkingOperationsService } from '../services/parking-operations.service.js';
 import {
   PatioLotadoError,
@@ -20,6 +22,11 @@ import {
 @Controller('patios')
 export class PatiosController {
   constructor(private readonly service: ParkingOperationsService) {}
+
+  @Get()
+  listarPatios(@Query() query: ListarPatiosQueryDto) {
+    return this.service.listarPatios(query.page ?? 1, query.limit ?? 20);
+  }
 
   @Post()
   criar(@Body() dto: CriarPatioDto) {

@@ -34,8 +34,8 @@ describe('PostgreSQL integration UC01-UC10', () => {
       synchronize: false,
     });
     await resetDataSource.initialize();
-    await resetDataSource.query('DROP SCHEMA public CASCADE');
-    await resetDataSource.query('CREATE SCHEMA public');
+    await resetDataSource.query('DROP SCHEMA IF EXISTS integration_uc CASCADE');
+    await resetDataSource.query('CREATE SCHEMA integration_uc');
     await resetDataSource.destroy();
 
     dataSource = new DataSource({
@@ -45,6 +45,7 @@ describe('PostgreSQL integration UC01-UC10', () => {
       username: process.env.POSTGRES_TEST_USER ?? 'postgres',
       password: process.env.POSTGRES_TEST_PASSWORD ?? 'postgres',
       database: process.env.POSTGRES_TEST_DB ?? 'vaga_facil_test',
+      schema: 'integration_uc',
       entities: [
         Patio,
         Vaga,
@@ -66,7 +67,9 @@ describe('PostgreSQL integration UC01-UC10', () => {
   });
 
   afterAll(async () => {
-    await dataSource.destroy();
+    if (dataSource?.isInitialized) {
+      await dataSource.destroy();
+    }
   });
 
   it('persists and reconnects every use-case aggregate', async () => {
@@ -164,6 +167,7 @@ describe('PostgreSQL integration UC01-UC10', () => {
       username: process.env.POSTGRES_TEST_USER ?? 'postgres',
       password: process.env.POSTGRES_TEST_PASSWORD ?? 'postgres',
       database: process.env.POSTGRES_TEST_DB ?? 'vaga_facil_test',
+      schema: 'integration_uc',
       entities: [
         Patio,
         Vaga,
@@ -266,5 +270,22 @@ describe('PostgreSQL integration UC01-UC10', () => {
     expect(
       entryResults.filter((result) => result.status === 'rejected'),
     ).toHaveLength(1);
+  });
+
+  it('lists persisted patios with pagination and stable ordering', async () => {
+    const parking = new TypeOrmParkingOperationsRepository(dataSource);
+    const patioZulu = await parking.createPatio(
+      new Patio(randomUUID(), 'Zulu'),
+    );
+    await parking.createPatio(new Patio(randomUUID(), 'Alpha'));
+
+    const firstPage = await parking.listPatios(1, 1);
+    expect(firstPage.total).toBeGreaterThanOrEqual(2);
+    expect(firstPage.items).toHaveLength(1);
+    expect(firstPage.items[0]?.nome).toBe('Alpha');
+
+    const secondPage = await parking.listPatios(2, 1);
+    expect(secondPage.items).toHaveLength(1);
+    expect(secondPage.items[0]?.nome).not.toBe(patioZulu.nome);
   });
 });

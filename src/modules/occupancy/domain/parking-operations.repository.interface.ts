@@ -7,8 +7,16 @@ import { Vaga } from '../entities/vaga.entity.js';
 
 export const PARKING_OPERATIONS_REPOSITORY = 'PARKING_OPERATIONS_REPOSITORY';
 
+export interface PaginatedPatios {
+  items: Patio[];
+  page: number;
+  limit: number;
+  total: number;
+}
+
 export interface ParkingOperationsRepository {
   createPatio(patio: Patio): Promise<Patio>;
+  listPatios(page: number, limit: number): Promise<PaginatedPatios>;
   findPatio(patioId: string): Promise<Patio | null>;
   createVaga(vaga: Vaga): Promise<Vaga>;
   listVagas(patioId: string): Promise<Vaga[]>;

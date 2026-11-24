@@ -6,17 +6,17 @@ Backend da plataforma Vaga Fácil, um sistema para apoiar a gestão de estaciona
 
 Este repositório contém os fluxos dos casos de uso UC01–UC10 em NestJS 12, TypeScript e ESM: cadastro de Motorista/Veículo, Pátio/Vaga, tarifa, entrada/saída, reservas, categorias, impedimentos e indicadores. Os comandos HTTP delegam aos serviços de aplicação; os repositórios InMemory são usados por padrão e os adaptadores TypeORM são selecionados quando `DB_ENABLED=true`. O checkout legado e a confirmação de reservas existentes foram preservados.
 
-| Área | Situação |
-| --- | --- |
-| Framework e linguagem | NestJS 12 e TypeScript configurados em ESM |
-| Gerenciador de pacotes | pnpm 12.15.0, fixado em `package.json` |
-| Testes | Vitest para testes unitários e e2e |
-| Validacao HTTP | DTOs com `class-validator` e `ValidationPipe` global (`whitelist` e `transform`) |
-| Endpoints | `GET /`, cadastro de Pátio/Vaga, tarifa, entrada, confirmação de reserva e checkout legado |
-| Banco de dados | PostgreSQL via TypeORM quando `DB_ENABLED=true` |
-| Containers e migrações | Docker Compose disponível; schema sincronizado pelo TypeORM fora de produção |
-| Checkout com pagamento obrigatório | Implementado em `POST /permanencias/:registroId/checkout` |
-| Porta HTTP | `PORT`, com padrão `3002` |
+| Área                               | Situação                                                                                   |
+| ---------------------------------- | ------------------------------------------------------------------------------------------ |
+| Framework e linguagem              | NestJS 12 e TypeScript configurados em ESM                                                 |
+| Gerenciador de pacotes             | pnpm 12.15.0, fixado em `package.json`                                                     |
+| Testes                             | Vitest para testes unitários e e2e                                                         |
+| Validacao HTTP                     | DTOs com `class-validator` e `ValidationPipe` global (`whitelist` e `transform`)           |
+| Endpoints                          | `GET /`, cadastro de Pátio/Vaga, tarifa, entrada, confirmação de reserva e checkout legado |
+| Banco de dados                     | PostgreSQL via TypeORM quando `DB_ENABLED=true`                                            |
+| Containers e migrações             | Docker Compose disponível; schema sincronizado pelo TypeORM fora de produção               |
+| Checkout com pagamento obrigatório | Implementado em `POST /permanencias/:registroId/checkout`                                  |
+| Porta HTTP                         | `PORT`, com padrão `3002`                                                                  |
 
 ## Requisitos
 
@@ -38,6 +38,7 @@ Por padrão, a aplicação fica disponível em `http://localhost:3002`. Para usa
 - `POST /patios` — cadastra Pátio (`{ "nome": "Pátio Central" }`)
 - `POST /patios/:patioId/vagas` — cadastra Vaga (`{ "codigo": "A-01" }`)
 - `GET /patios/:patioId/vagas` — lista as Vagas do Pátio
+- `GET /patios?page=1&limit=20` — UC13: lista Pátios paginados e ordenados por nome
 - `POST /patios/:patioId/tarifas` — define Tarifa Vigente (`{ "valorPorHora": 18 }`)
 - `GET /patios/:patioId/tarifa-vigente` — consulta a tarifa aplicável
 - `POST /patios/:patioId/permanencias` — registra entrada (`{ "placa": "ABC-1234" }`)
