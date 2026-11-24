@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { AssociarCategoriaVagaDto } from '../dto/associar-categoria-vaga.dto.js';
 import { CriarCategoriaVagaDto } from '../dto/criar-categoria-vaga.dto.js';
 import { ParkingOperationsService } from '../services/parking-operations.service.js';
@@ -20,6 +28,14 @@ export class CategoriasVagaController {
   @Get('categorias-vaga')
   listar(@Param('patioId') patioId: string) {
     return this.service.listarCategorias(patioId);
+  }
+
+  @Get('categorias-vaga/:categoriaId')
+  buscar(
+    @Param('patioId', ParseUUIDPipe) patioId: string,
+    @Param('categoriaId', ParseUUIDPipe) categoriaId: string,
+  ) {
+    return this.service.buscarCategoria(patioId, categoriaId);
   }
 
   @Patch('vagas/:vagaId/categoria')

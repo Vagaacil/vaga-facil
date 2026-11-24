@@ -56,6 +56,12 @@ export class TypeOrmParkingOperationsRepository implements ParkingOperationsRepo
     return this.dataSource.getRepository(Patio).findOne({ where: { patioId } });
   }
 
+  async findVaga(patioId: string, vagaId: string): Promise<Vaga | null> {
+    return this.dataSource
+      .getRepository(Vaga)
+      .findOne({ where: { patioId, vagaId } });
+  }
+
   async createVaga(vaga: Vaga): Promise<Vaga> {
     if (!(await this.findPatio(vaga.patioId))) {
       throw new PatioNaoEncontradoError(vaga.patioId);
@@ -78,6 +84,15 @@ export class TypeOrmParkingOperationsRepository implements ParkingOperationsRepo
       throw new PatioNaoEncontradoError(categoria.patioId);
     }
     return this.dataSource.getRepository(CategoriaDeVaga).save(categoria);
+  }
+
+  findCategoria(
+    patioId: string,
+    categoriaId: string,
+  ): Promise<CategoriaDeVaga | null> {
+    return this.dataSource
+      .getRepository(CategoriaDeVaga)
+      .findOne({ where: { patioId, categoriaId } });
   }
 
   async listarCategorias(patioId: string): Promise<CategoriaDeVaga[]> {
@@ -240,6 +255,12 @@ export class TypeOrmParkingOperationsRepository implements ParkingOperationsRepo
       throw new PatioNaoEncontradoError(tarifa.patioId);
     }
     return this.dataSource.getRepository(TarifaVigente).save(tarifa);
+  }
+
+  findTarifa(patioId: string, tarifaId: string): Promise<TarifaVigente | null> {
+    return this.dataSource
+      .getRepository(TarifaVigente)
+      .findOne({ where: { patioId, tarifaId } });
   }
 
   async buscarTarifaVigente(
@@ -419,5 +440,11 @@ export class TypeOrmParkingOperationsRepository implements ParkingOperationsRepo
         status: ParkingStayStatusEnum.OPEN,
       })
       .getOne();
+  }
+  listarImpedimentos(registroId: string): Promise<ImpedimentoSaida[]> {
+    return this.dataSource.getRepository(ImpedimentoSaida).find({
+      where: { registroId },
+      order: { resolvidoEm: 'DESC' },
+    });
   }
 }

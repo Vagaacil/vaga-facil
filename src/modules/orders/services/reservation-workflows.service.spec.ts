@@ -67,6 +67,35 @@ describe('customer and reservation workflows', () => {
     expect(veiculo.motoristaId).toBe(motorista.motoristaId);
   });
 
+  it('finds a driver, vehicle and reservation by identifier', async () => {
+    const { ordersService, parkingService } = fixture();
+    const patio = await parkingService.criarPatio('Pátio Busca');
+    await parkingService.criarVaga(patio.patioId, 'B-01');
+    const motorista = await ordersService.cadastrarMotorista(
+      'Busca Silva',
+      'busca@example.com',
+    );
+    const veiculo = await ordersService.cadastrarVeiculo(
+      motorista.motoristaId,
+      'ABC-1234',
+    );
+    const reserva = await ordersService.reservarVaga(
+      patio.patioId,
+      motorista.motoristaId,
+      veiculo.veiculoId,
+    );
+
+    await expect(
+      ordersService.buscarMotorista(motorista.motoristaId),
+    ).resolves.toBe(motorista);
+    await expect(
+      ordersService.buscarVeiculo(motorista.motoristaId, veiculo.veiculoId),
+    ).resolves.toBe(veiculo);
+    await expect(ordersService.buscarReserva(reserva.reservaId)).resolves.toBe(
+      reserva,
+    );
+  });
+
   it('rejects duplicate driver email and vehicle plate', async () => {
     const { ordersService } = fixture();
     await ordersService.cadastrarMotorista('Ana Silva', 'ana@example.com');

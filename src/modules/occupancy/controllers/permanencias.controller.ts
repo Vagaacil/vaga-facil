@@ -1,4 +1,11 @@
-import { Controller, HttpException, Param, Post } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpException,
+  Param,
+  ParseUUIDPipe,
+  Post,
+} from '@nestjs/common';
 import {
   PermanenciaJaFechadaError,
   PermanenciaNaoEncontradaError,
@@ -8,6 +15,11 @@ import { ParkingOperationsService } from '../services/parking-operations.service
 @Controller('permanencias')
 export class PermanenciasController {
   constructor(private readonly service: ParkingOperationsService) {}
+
+  @Get(':registroId')
+  buscar(@Param('registroId', ParseUUIDPipe) registroId: string) {
+    return this.service.buscarPermanencia(registroId);
+  }
 
   @Post(':registroId/checkout')
   async checkout(@Param('registroId') registroId: string) {

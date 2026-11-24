@@ -48,6 +48,37 @@ describe('ParkingOperationsService and RegistrarEntradaHandler', () => {
     await expect(service.listarVagas(patio.patioId)).resolves.toEqual([vaga]);
   });
 
+  it('finds patio and vaga by identifier', async () => {
+    const { service } = fixture();
+    const patio = await service.criarPatio('Pátio Busca');
+    const vaga = await service.criarVaga(patio.patioId, 'B-01');
+
+    await expect(service.buscarPatio(patio.patioId)).resolves.toBe(patio);
+    await expect(service.buscarVaga(patio.patioId, vaga.vagaId)).resolves.toBe(
+      vaga,
+    );
+    await expect(
+      service.buscarPatio('00000000-0000-4000-8000-000000000000'),
+    ).rejects.toMatchObject({ status: 404 });
+  });
+
+  it('finds a stay and its impediments by identifier', async () => {
+    const { service } = fixture();
+    const patio = await service.criarPatio('Pátio Busca');
+    await service.criarVaga(patio.patioId, 'B-01');
+    const entry = await service.registrarEntrada({
+      patioId: patio.patioId,
+      placa: 'ABC-1234',
+    });
+
+    await expect(
+      service.buscarPermanencia(entry.registro.registroId),
+    ).resolves.toBe(entry.registro);
+    await expect(
+      service.listarImpedimentos(entry.registro.registroId),
+    ).resolves.toEqual([]);
+  });
+
   it('lists patios with pagination and stable ordering', async () => {
     const { service } = fixture();
     await service.criarPatio('Zulu');

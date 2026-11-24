@@ -4,6 +4,7 @@ import {
   Get,
   HttpException,
   Param,
+  ParseUUIDPipe,
   Post,
 } from '@nestjs/common';
 import { PatioNaoEncontradoError } from '../domain/parking-operations.errors.js';
@@ -39,6 +40,14 @@ export class TarifasController {
     } catch (error) {
       this.mapPatioError(error);
     }
+  }
+
+  @Get('tarifas/:tarifaId')
+  buscar(
+    @Param('patioId', ParseUUIDPipe) patioId: string,
+    @Param('tarifaId', ParseUUIDPipe) tarifaId: string,
+  ) {
+    return this.service.buscarTarifa(patioId, tarifaId);
   }
 
   private mapPatioError(error: unknown): never {

@@ -19,6 +19,7 @@ import {
 import { Patio } from '../entities/patio.entity.js';
 import { CategoriaDeVaga } from '../entities/categoria-de-vaga.entity.js';
 import { TarifaVigente } from '../entities/tarifa-vigente.entity.js';
+import { RegistroDePermanencia } from '../entities/registro-de-permanencia.entity.js';
 import { Vaga } from '../entities/vaga.entity.js';
 import {
   PermanenciaJaFechadaError,
@@ -105,6 +106,78 @@ export class ParkingOperationsService implements OnModuleInit, OnModuleDestroy {
       });
     }
     return this.repository.listPatios(page, limit);
+  }
+
+  async buscarPatio(patioId: string): Promise<Patio> {
+    const patio = await this.repository.findPatio(patioId);
+    if (!patio) {
+      throw new NotFoundException({
+        code: 'PATIO_NAO_ENCONTRADO',
+        message: 'Pátio não encontrado.',
+      });
+    }
+    return patio;
+  }
+
+  async buscarVaga(patioId: string, vagaId: string): Promise<Vaga> {
+    const vaga = await this.repository.findVaga(patioId, vagaId);
+    if (!vaga) {
+      throw new NotFoundException({
+        code: 'VAGA_NAO_ENCONTRADA',
+        message: 'Vaga não encontrada.',
+      });
+    }
+    return vaga;
+  }
+
+  async buscarPermanencia(registroId: string): Promise<RegistroDePermanencia> {
+    const registro = await this.repository.findPermanenciaById(registroId);
+    if (!registro) {
+      throw new NotFoundException({
+        code: 'PERMANENCIA_NAO_ENCONTRADA',
+        message: 'Permanência não encontrada.',
+      });
+    }
+    return registro;
+  }
+
+  async buscarCategoria(
+    patioId: string,
+    categoriaId: string,
+  ): Promise<CategoriaDeVaga> {
+    const categoria = await this.repository.findCategoria(patioId, categoriaId);
+    if (!categoria) {
+      throw new NotFoundException({
+        code: 'CATEGORIA_NAO_ENCONTRADA',
+        message: 'Categoria não encontrada.',
+      });
+    }
+    return categoria;
+  }
+
+  async buscarTarifa(
+    patioId: string,
+    tarifaId: string,
+  ): Promise<TarifaVigente> {
+    const tarifa = await this.repository.findTarifa(patioId, tarifaId);
+    if (!tarifa) {
+      throw new NotFoundException({
+        code: 'TARIFA_NAO_ENCONTRADA',
+        message: 'Tarifa não encontrada.',
+      });
+    }
+    return tarifa;
+  }
+
+  async listarImpedimentos(registroId: string): Promise<ImpedimentoSaida[]> {
+    const registro = await this.repository.findPermanenciaById(registroId);
+    if (!registro) {
+      throw new NotFoundException({
+        code: 'PERMANENCIA_NAO_ENCONTRADA',
+        message: 'Permanência não encontrada.',
+      });
+    }
+    return this.repository.listarImpedimentos(registroId);
   }
 
   async criarVaga(

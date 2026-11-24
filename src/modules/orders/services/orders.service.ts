@@ -96,6 +96,42 @@ export class OrdersService {
     }
   }
 
+  async buscarMotorista(motoristaId: string): Promise<Motorista> {
+    const motorista = await this.ordersRepository.buscarMotorista(motoristaId);
+    if (!motorista) {
+      throw new NotFoundException({
+        code: 'MOTORISTA_NAO_ENCONTRADO',
+        message: 'Motorista não encontrado.',
+      });
+    }
+    return motorista;
+  }
+
+  async buscarVeiculo(
+    motoristaId: string,
+    veiculoId: string,
+  ): Promise<Veiculo> {
+    const veiculo = await this.ordersRepository.buscarVeiculo(veiculoId);
+    if (!veiculo || veiculo.motoristaId !== motoristaId) {
+      throw new NotFoundException({
+        code: 'VEICULO_NAO_ENCONTRADO',
+        message: 'Veículo não encontrado.',
+      });
+    }
+    return veiculo;
+  }
+
+  async buscarReserva(reservaId: string): Promise<Reserva> {
+    const reserva = await this.ordersRepository.buscarReserva(reservaId);
+    if (!reserva) {
+      throw new NotFoundException({
+        code: 'RESERVA_NAO_ENCONTRADA',
+        message: 'Reserva não encontrada.',
+      });
+    }
+    return reserva;
+  }
+
   async cadastrarVeiculo(
     motoristaId: string,
     placaInput: unknown,
