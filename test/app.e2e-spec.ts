@@ -526,6 +526,30 @@ describe('AppController (e2e)', () => {
       .expect(400);
   });
 
+  it('searches patios and rejects malformed UUID identifiers', async () => {
+    const created = await request(app.getHttpServer())
+      .post('/patios')
+      .send({ nome: 'Pátio Busca' })
+      .expect(201);
+    const patioId = (created.body as { patioId: string }).patioId;
+
+    await request(app.getHttpServer())
+      .get(`/patios/${patioId}`)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body as { patioId: string; nome: string }).toMatchObject({
+          patioId,
+          nome: 'Pátio Busca',
+        });
+      });
+
+    await request(app.getHttpServer()).get('/patios/not-a-uuid').expect(400);
+
+    await request(app.getHttpServer())
+      .get('/patios/00000000-0000-4000-8000-000000000000')
+      .expect(404);
+  });
+
   afterEach(async () => {
     await app.close();
   });

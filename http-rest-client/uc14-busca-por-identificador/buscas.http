@@ -1,0 +1,25 @@
+@baseUrl = http://localhost:3002
+
+### UC14 buscar Pátio por UUID → esperado: 200 ou 404 conforme o ID
+GET {{baseUrl}}/patios/{{patioId}}
+
+### UC14 buscar Vaga por UUID → esperado: 200 ou 404 conforme o ID
+GET {{baseUrl}}/patios/{{patioId}}/vagas/{{vagaId}}
+
+### UC14 buscar Motorista por UUID → esperado: 200 ou 404 conforme o ID
+GET {{baseUrl}}/motoristas/{{motoristaId}}
+
+### UC14 buscar Veículo por UUID → esperado: 200 ou 404 conforme o ID
+GET {{baseUrl}}/motoristas/{{motoristaId}}/veiculos/{{veiculoId}}
+
+### UC14 buscar Reserva por UUID → esperado: 200 ou 404 conforme o ID
+GET {{baseUrl}}/reservas/{{reservaId}}
+
+### UC14 buscar Permanência por UUID → esperado: 200 ou 404 conforme o ID
+GET {{baseUrl}}/permanencias/{{registroId}}
+
+### UC14 identificar UUID inválido → esperado: 400 Bad Request
+GET {{baseUrl}}/patios/not-a-uuid
+
+### UC14 UUID válido inexistente → esperado: 404 Not Found
+GET {{baseUrl}}/patios/00000000-0000-4000-8000-000000000000

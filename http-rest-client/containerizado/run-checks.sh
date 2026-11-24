@@ -81,6 +81,8 @@ check "UC03 reserva inexistente" "404" "$(status --request POST "$BASE/reservas/
 check "UC02 reserva sem motorista" "400" "$(status --request POST "$BASE/reservas" --header 'Content-Type: application/json' --data '{"patioId":"p","veiculoId":"v"}')"
 check "UC10 indicadores da rede" "200" "$(status "$BASE/indicadores/ocupacao")"
 check "UC13 lista de pátios" "200" "$(status "$BASE/patios?page=1&limit=20")"
+check "UC14 identificador inválido" "400" "$(status "$BASE/patios/not-a-uuid")"
+check "UC14 UUID válido inexistente" "404" "$(status "$BASE/patios/00000000-0000-4000-8000-000000000000")"
 
 if [ -n "$patio_id" ]; then
   check "registro existe no PostgreSQL" "1" "${sql_result:-0}"

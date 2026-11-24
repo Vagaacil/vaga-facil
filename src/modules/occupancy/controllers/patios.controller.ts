@@ -5,6 +5,7 @@ import {
   HttpException,
   Param,
   Post,
+  ParseUUIDPipe,
   Query,
   Res,
 } from '@nestjs/common';
@@ -26,6 +27,19 @@ export class PatiosController {
   @Get()
   listarPatios(@Query() query: ListarPatiosQueryDto) {
     return this.service.listarPatios(query.page ?? 1, query.limit ?? 20);
+  }
+
+  @Get(':patioId')
+  buscarPatio(@Param('patioId', ParseUUIDPipe) patioId: string) {
+    return this.service.buscarPatio(patioId);
+  }
+
+  @Get(':patioId/vagas/:vagaId')
+  buscarVaga(
+    @Param('patioId', ParseUUIDPipe) patioId: string,
+    @Param('vagaId', ParseUUIDPipe) vagaId: string,
+  ) {
+    return this.service.buscarVaga(patioId, vagaId);
   }
 
   @Post()

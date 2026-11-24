@@ -1,4 +1,11 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+} from '@nestjs/common';
 import { ResolverImpedimentoSaidaDto } from '../dto/resolver-impedimento-saida.dto.js';
 import { ParkingOperationsService } from '../services/parking-operations.service.js';
 
@@ -17,5 +24,10 @@ export class ImpedimentosSaidaController {
       dto.justificativa,
       dto.operadorId,
     );
+  }
+
+  @Get(':registroId/impedimentos')
+  listar(@Param('registroId', ParseUUIDPipe) registroId: string) {
+    return this.service.listarImpedimentos(registroId);
   }
 }

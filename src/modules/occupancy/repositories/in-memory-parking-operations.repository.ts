@@ -82,6 +82,11 @@ export class InMemoryParkingOperationsRepository implements ParkingOperationsRep
     return Promise.resolve(this.patios.get(patioId) ?? null);
   }
 
+  findVaga(patioId: string, vagaId: string): Promise<Vaga | null> {
+    const vaga = this.vagas.get(vagaId);
+    return Promise.resolve(vaga && vaga.patioId === patioId ? vaga : null);
+  }
+
   async createVaga(vaga: Vaga): Promise<Vaga> {
     if (!(await this.findPatio(vaga.patioId))) {
       throw new PatioNaoEncontradoError(vaga.patioId);
@@ -122,6 +127,16 @@ export class InMemoryParkingOperationsRepository implements ParkingOperationsRep
     }
     this.categorias.set(categoria.categoriaId, categoria);
     return categoria;
+  }
+
+  findCategoria(
+    patioId: string,
+    categoriaId: string,
+  ): Promise<CategoriaDeVaga | null> {
+    const categoria = this.categorias.get(categoriaId);
+    return Promise.resolve(
+      categoria && categoria.patioId === patioId ? categoria : null,
+    );
   }
 
   async listarCategorias(patioId: string): Promise<CategoriaDeVaga[]> {
@@ -263,6 +278,14 @@ export class InMemoryParkingOperationsRepository implements ParkingOperationsRep
     }
     this.tarifas.push(tarifa);
     return tarifa;
+  }
+
+  findTarifa(patioId: string, tarifaId: string): Promise<TarifaVigente | null> {
+    const tarifa =
+      this.tarifas.find(
+        (item) => item.patioId === patioId && item.tarifaId === tarifaId,
+      ) ?? null;
+    return Promise.resolve(tarifa);
   }
 
   buscarTarifaVigente(
@@ -407,5 +430,9 @@ export class InMemoryParkingOperationsRepository implements ParkingOperationsRep
           permanencia.getStatus() === ParkingStayStatusEnum.OPEN,
       ) ?? null,
     );
+  }
+
+  listarImpedimentos(registroId: string): Promise<ImpedimentoSaida[]> {
+    return Promise.resolve([...(this.impedimentos.get(registroId) ?? [])]);
   }
 }

@@ -38,6 +38,12 @@ Por padrão, a aplicação fica disponível em `http://localhost:3002`. Para usa
 - `POST /patios` — cadastra Pátio (`{ "nome": "Pátio Central" }`)
 - `POST /patios/:patioId/vagas` — cadastra Vaga (`{ "codigo": "A-01" }`)
 - `GET /patios/:patioId/vagas` — lista as Vagas do Pátio
+- `GET /patios/:patioId` — UC14: busca um Pátio por identificador
+- `GET /patios/:patioId/vagas/:vagaId` — UC14: busca uma Vaga por identificador
+- `GET /motoristas/:motoristaId` — UC14: busca um Motorista por identificador
+- `GET /motoristas/:motoristaId/veiculos/:veiculoId` — UC14: busca um Veículo por identificador
+- `GET /reservas/:reservaId` — UC14: busca uma Reserva por identificador
+- `GET /permanencias/:registroId` — UC14: busca uma Permanência por identificador
 - `GET /patios?page=1&limit=20` — UC13: lista Pátios paginados e ordenados por nome
 - `POST /patios/:patioId/tarifas` — define Tarifa Vigente (`{ "valorPorHora": 18 }`)
 - `GET /patios/:patioId/tarifa-vigente` — consulta a tarifa aplicável

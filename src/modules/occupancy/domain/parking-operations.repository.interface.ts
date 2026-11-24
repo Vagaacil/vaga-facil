@@ -18,8 +18,13 @@ export interface ParkingOperationsRepository {
   createPatio(patio: Patio): Promise<Patio>;
   listPatios(page: number, limit: number): Promise<PaginatedPatios>;
   findPatio(patioId: string): Promise<Patio | null>;
+  findVaga(patioId: string, vagaId: string): Promise<Vaga | null>;
   createVaga(vaga: Vaga): Promise<Vaga>;
   listVagas(patioId: string): Promise<Vaga[]>;
+  findCategoria(
+    patioId: string,
+    categoriaId: string,
+  ): Promise<CategoriaDeVaga | null>;
   criarCategoria(categoria: CategoriaDeVaga): Promise<CategoriaDeVaga>;
   listarCategorias(patioId: string): Promise<CategoriaDeVaga[]>;
   associarCategoria(
@@ -50,6 +55,7 @@ export interface ParkingOperationsRepository {
     tempoMedioPermanenciaMinutos: number;
   }>;
   salvarTarifa(tarifa: TarifaVigente): Promise<TarifaVigente>;
+  findTarifa(patioId: string, tarifaId: string): Promise<TarifaVigente | null>;
   buscarTarifaVigente(
     patioId: string,
     instante: Date,
@@ -81,4 +87,5 @@ export interface ParkingOperationsRepository {
     patioId: string,
     placa: string,
   ): Promise<RegistroDePermanencia | null>;
+  listarImpedimentos(registroId: string): Promise<ImpedimentoSaida[]>;
 }
