@@ -67,6 +67,34 @@ describe('customer and reservation workflows', () => {
     expect(veiculo.motoristaId).toBe(motorista.motoristaId);
   });
 
+  it('rejects duplicate driver email and vehicle plate', async () => {
+    const { ordersService } = fixture();
+    await ordersService.cadastrarMotorista('Ana Silva', 'ana@example.com');
+
+    await expect(
+      ordersService.cadastrarMotorista('Outra Ana', 'ANA@example.com'),
+    ).rejects.toMatchObject({
+      status: 409,
+      response: { code: 'MOTORISTA_DUPLICADO' },
+    });
+
+    const motorista = await ordersService.cadastrarMotorista(
+      'Bruno Silva',
+      'bruno@example.com',
+    );
+    await ordersService.cadastrarVeiculo(
+      motorista.motoristaId,
+      'abc-1234',
+      'carro',
+    );
+    await expect(
+      ordersService.cadastrarVeiculo(motorista.motoristaId, 'ABC1234', 'moto'),
+    ).rejects.toMatchObject({
+      status: 409,
+      response: { code: 'VEICULO_DUPLICADO' },
+    });
+  });
+
   it('retains a real spot, converts it on entry and completes the reservation', async () => {
     const { ordersService, parkingService, ordersRepository } = fixture();
     const patio = await parkingService.criarPatio('Pátio Central');

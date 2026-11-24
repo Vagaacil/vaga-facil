@@ -77,9 +77,23 @@ export class OrdersService {
     ) {
       throw new BadRequestException('O e-mail do Motorista é inválido.');
     }
-    return this.ordersRepository.criarMotorista(
-      new Motorista(randomUUID(), nome.trim(), email.trim().toLowerCase()),
-    );
+    try {
+      return await this.ordersRepository.criarMotorista(
+        new Motorista(randomUUID(), nome.trim(), email.trim().toLowerCase()),
+      );
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        (error.message === 'MOTORISTA_DUPLICADO' ||
+          error.message.includes('uq_driver_email'))
+      ) {
+        throw new ConflictException({
+          code: 'MOTORISTA_DUPLICADO',
+          message: 'Já existe um Motorista com este e-mail.',
+        });
+      }
+      throw error;
+    }
   }
 
   async cadastrarVeiculo(
@@ -115,14 +129,28 @@ export class OrdersService {
       }
       throw error;
     }
-    return this.ordersRepository.criarVeiculo(
-      new Veiculo(
-        randomUUID(),
-        motoristaId,
-        placa.valor,
-        tipoInput.trim().toUpperCase(),
-      ),
-    );
+    try {
+      return await this.ordersRepository.criarVeiculo(
+        new Veiculo(
+          randomUUID(),
+          motoristaId,
+          placa.valor,
+          tipoInput.trim().toUpperCase(),
+        ),
+      );
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        (error.message === 'VEICULO_DUPLICADO' ||
+          error.message.includes('uq_registered_vehicle_plate'))
+      ) {
+        throw new ConflictException({
+          code: 'VEICULO_DUPLICADO',
+          message: 'Já existe um Veículo com esta placa.',
+        });
+      }
+      throw error;
+    }
   }
 
   async reservarVaga(

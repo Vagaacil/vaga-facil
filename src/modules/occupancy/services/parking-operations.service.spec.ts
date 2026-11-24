@@ -48,6 +48,31 @@ describe('ParkingOperationsService and RegistrarEntradaHandler', () => {
     await expect(service.listarVagas(patio.patioId)).resolves.toEqual([vaga]);
   });
 
+  it('rejects duplicate spot codes and category codes', async () => {
+    const { service } = fixture();
+    const patio = await service.criarPatio('Pátio Central');
+    await service.criarVaga(patio.patioId, 'A-01');
+
+    await expect(
+      service.criarVaga(patio.patioId, 'A-01'),
+    ).rejects.toMatchObject({
+      status: 409,
+      response: { code: 'VAGA_DUPLICADA' },
+    });
+
+    await service.criarCategoria(patio.patioId, 'MOTO', 'Motocicletas', [
+      'MOTO',
+    ]);
+    await expect(
+      service.criarCategoria(patio.patioId, 'MOTO', 'Categoria duplicada', [
+        'MOTO',
+      ]),
+    ).rejects.toMatchObject({
+      status: 409,
+      response: { code: 'CATEGORIA_DUPLICADA' },
+    });
+  });
+
   it('registers an entry with normalized plate and occupies exactly one spot', async () => {
     const { service } = fixture();
     const patio = await service.criarPatio('Pátio Central');
