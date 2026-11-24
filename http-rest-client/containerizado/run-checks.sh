@@ -80,6 +80,7 @@ fi
 check "UC03 reserva inexistente" "404" "$(status --request POST "$BASE/reservas/inexistente/cancelar" --header 'Content-Type: application/json')"
 check "UC02 reserva sem motorista" "400" "$(status --request POST "$BASE/reservas" --header 'Content-Type: application/json' --data '{"patioId":"p","veiculoId":"v"}')"
 check "UC10 indicadores da rede" "200" "$(status "$BASE/indicadores/ocupacao")"
+check "UC13 lista de pátios" "200" "$(status "$BASE/patios?page=1&limit=20")"
 
 if [ -n "$patio_id" ]; then
   check "registro existe no PostgreSQL" "1" "${sql_result:-0}"

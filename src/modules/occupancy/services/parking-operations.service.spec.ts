@@ -48,6 +48,41 @@ describe('ParkingOperationsService and RegistrarEntradaHandler', () => {
     await expect(service.listarVagas(patio.patioId)).resolves.toEqual([vaga]);
   });
 
+  it('lists patios with pagination and stable ordering', async () => {
+    const { service } = fixture();
+    await service.criarPatio('Zulu');
+    await service.criarPatio('Alpha');
+    await service.criarPatio('Beta');
+
+    await expect(service.listarPatios(1, 2)).resolves.toMatchObject({
+      page: 1,
+      limit: 2,
+      total: 3,
+    });
+    const result = await service.listarPatios(1, 2);
+    expect(result.items.map((patio) => patio.nome)).toEqual(['Alpha', 'Beta']);
+  });
+
+  it('returns an empty page for a repo with no patios', async () => {
+    const { service } = fixture();
+    await expect(service.listarPatios()).resolves.toEqual({
+      items: [],
+      page: 1,
+      limit: 20,
+      total: 0,
+    });
+  });
+
+  it('rejects invalid pagination parameters', async () => {
+    const { service } = fixture();
+    await expect(service.listarPatios(0, 20)).rejects.toMatchObject({
+      status: 400,
+    });
+    await expect(service.listarPatios(1, 101)).rejects.toMatchObject({
+      status: 400,
+    });
+  });
+
   it('rejects duplicate spot codes and category codes', async () => {
     const { service } = fixture();
     const patio = await service.criarPatio('Pátio Central');

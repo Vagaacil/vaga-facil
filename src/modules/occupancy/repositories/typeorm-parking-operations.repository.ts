@@ -33,6 +33,16 @@ export class TypeOrmParkingOperationsRepository implements ParkingOperationsRepo
     return this.dataSource.getRepository(Patio).save(patio);
   }
 
+  async listPatios(page: number, limit: number) {
+    const repository = this.dataSource.getRepository(Patio);
+    const [items, total] = await repository.findAndCount({
+      order: { nome: 'ASC', patioId: 'ASC' },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+    return { items, page, limit, total };
+  }
+
   buscarCategoria(
     patioId: string,
     codigo: string,

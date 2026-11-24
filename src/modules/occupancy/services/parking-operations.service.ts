@@ -91,6 +91,22 @@ export class ParkingOperationsService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
+  async listarPatios(page = 1, limit = 20) {
+    if (!Number.isInteger(page) || page < 1) {
+      throw new BadRequestException({
+        code: 'PAGINACAO_INVALIDA',
+        message: 'page deve ser um inteiro maior ou igual a 1.',
+      });
+    }
+    if (!Number.isInteger(limit) || limit < 1 || limit > 100) {
+      throw new BadRequestException({
+        code: 'PAGINACAO_INVALIDA',
+        message: 'limit deve ser um inteiro entre 1 e 100.',
+      });
+    }
+    return this.repository.listPatios(page, limit);
+  }
+
   async criarVaga(
     patioId: string,
     codigo: unknown,

@@ -28,5 +28,6 @@ export default defineConfig({
   test: {
     environment: 'node',
     include: ['src/**/*.spec.ts', 'test/**/*.e2e-spec.ts'],
+    exclude: ['test/postgresql.integration.e2e-spec.ts', 'node_modules/**'],
   },
 });

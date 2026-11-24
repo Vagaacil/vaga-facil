@@ -30,6 +30,34 @@ describe('AppController (e2e)', () => {
       .expect('Hello World!');
   });
 
+  it('/patios (GET) lists all patios and validates pagination', async () => {
+    await request(app.getHttpServer())
+      .post('/patios')
+      .send({ nome: 'Zulu' })
+      .expect(201);
+    await request(app.getHttpServer())
+      .post('/patios')
+      .send({ nome: 'Alpha' })
+      .expect(201);
+
+    await request(app.getHttpServer())
+      .get('/patios?page=1&limit=20')
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body as { items: unknown[]; total: number }).toMatchObject({
+          total: 2,
+        });
+        expect((body as { items: Array<{ nome: string }> }).items).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({ nome: 'Alpha' }),
+            expect.objectContaining({ nome: 'Zulu' }),
+          ]),
+        );
+      });
+
+    await request(app.getHttpServer()).get('/patios?page=0').expect(400);
+  });
+
   it('/orders/reservation-1/confirm (POST)', () => {
     return request(app.getHttpServer())
       .post('/orders/reservation-1/confirm')
