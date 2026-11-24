@@ -1,0 +1,7 @@
+@baseUrl = http://localhost:3002
+
+### Health check → esperado: 200 OK
+GET {{baseUrl}}/
+
+### Rota inexistente → esperado: 404 Not Found
+GET {{baseUrl}}/rota-inexistente

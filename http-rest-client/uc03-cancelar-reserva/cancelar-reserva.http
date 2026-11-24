@@ -1,0 +1,5 @@
+@baseUrl = http://localhost:3002
+
+### UC03 reserva inexistente → esperado: 404 Not Found
+POST {{baseUrl}}/reservas/inexistente/cancelar
+Content-Type: application/json

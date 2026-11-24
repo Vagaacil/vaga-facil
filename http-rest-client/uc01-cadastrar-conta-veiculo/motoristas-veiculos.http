@@ -1,0 +1,22 @@
+@baseUrl = http://localhost:3002
+
+### UC01 motorista válido → esperado: 201 Created
+# @name criarMotorista
+POST {{baseUrl}}/motoristas
+Content-Type: application/json
+
+{
+  "nome": "Motorista REST",
+  "email": "motorista-rest@example.com"
+}
+
+@motoristaId = {{criarMotorista.response.body.motoristaId}}
+
+### UC01 veículo válido → esperado: 201 Created
+POST {{baseUrl}}/motoristas/{{motoristaId}}/veiculos
+Content-Type: application/json
+
+{
+  "placa": "ABC-1234",
+  "tipo": "CARRO"
+}

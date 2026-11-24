@@ -1,0 +1,9 @@
+@baseUrl = http://localhost:3002
+
+### UC04 entrada sem placa → esperado: 400 Bad Request
+POST {{baseUrl}}/patios/inexistente/permanencias
+Content-Type: application/json
+
+{
+  "placa": ""
+}

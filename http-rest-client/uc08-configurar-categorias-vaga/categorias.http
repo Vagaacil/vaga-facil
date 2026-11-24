@@ -1,0 +1,7 @@
+@baseUrl = http://localhost:3002
+
+### UC08 categoria sem dados → esperado: 400 Bad Request
+POST {{baseUrl}}/patios/inexistente/categorias-vaga
+Content-Type: application/json
+
+{}
