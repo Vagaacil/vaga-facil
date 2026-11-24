@@ -196,7 +196,7 @@ export class InMemoryParkingOperationsRepository implements ParkingOperationsRep
       (registro) => !patioId || registro.patioId === patioId,
     );
     const fechadas = permanencias.filter(
-      (registro) => registro.horarioSaida !== undefined,
+      (registro) => registro.horarioSaida != null,
     );
     const totalMinutos = fechadas.reduce(
       (total, registro) =>

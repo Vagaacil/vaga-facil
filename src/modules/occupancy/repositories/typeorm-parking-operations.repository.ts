@@ -190,7 +190,7 @@ export class TypeOrmParkingOperationsRepository implements ParkingOperationsRepo
       .getRepository(RegistroDePermanencia)
       .find(patioId ? { where: { patioId } } : {});
     const fechadas = permanencias.filter(
-      (registro) => registro.horarioSaida !== undefined,
+      (registro) => registro.horarioSaida != null,
     );
     const totalMinutos = fechadas.reduce(
       (total, registro) =>
