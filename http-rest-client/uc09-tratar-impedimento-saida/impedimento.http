@@ -1,0 +1,7 @@
+@baseUrl = http://localhost:3002
+
+### UC09 impedimento sem dados válidos → esperado: 400 Bad Request
+POST {{baseUrl}}/permanencias/inexistente/resolver-impedimento
+Content-Type: application/json
+
+{}

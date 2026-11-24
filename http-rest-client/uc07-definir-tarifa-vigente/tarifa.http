@@ -1,0 +1,7 @@
+@baseUrl = http://localhost:3002
+
+### UC07 tarifa sem dados → esperado: 400 Bad Request
+POST {{baseUrl}}/patios/inexistente/tarifas
+Content-Type: application/json
+
+{}

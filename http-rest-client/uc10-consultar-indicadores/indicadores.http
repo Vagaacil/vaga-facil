@@ -1,0 +1,7 @@
+@baseUrl = http://localhost:3002
+
+### UC10 indicadores da rede → esperado: 200 OK
+GET {{baseUrl}}/indicadores/ocupacao
+
+### UC10 indicadores de pátio inexistente → esperado: 404 Not Found
+GET {{baseUrl}}/patios/inexistente/indicadores

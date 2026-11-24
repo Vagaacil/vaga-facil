@@ -1,0 +1,14 @@
+@baseUrl = http://localhost:3002
+
+### UC03 reserva inexistente → esperado: 404 Not Found
+POST {{baseUrl}}/reservas/inexistente/cancelar
+Content-Type: application/json
+
+### UC02 reserva sem motorista → esperado: 400 Bad Request
+POST {{baseUrl}}/reservas
+Content-Type: application/json
+
+{
+  "patioId": "p",
+  "veiculoId": "v"
+}

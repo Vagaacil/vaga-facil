@@ -1,0 +1,29 @@
+@baseUrl = http://localhost:3002
+
+### UC06 cadastro válido → esperado: 201 Created
+# @name criarPatio
+POST {{baseUrl}}/patios
+Content-Type: application/json
+
+{
+  "nome": "Pátio REST Client"
+}
+
+@patioId = {{criarPatio.response.body.patioId}}
+
+### UC06 vaga válida → esperado: 201 Created
+POST {{baseUrl}}/patios/{{patioId}}/vagas
+Content-Type: application/json
+
+{
+  "codigo": "HTTP-01",
+  "categoria": "PADRAO"
+}
+
+### UC06 nome vazio → esperado: 400 Bad Request
+POST {{baseUrl}}/patios
+Content-Type: application/json
+
+{
+  "nome": ""
+}

@@ -1,0 +1,21 @@
+@baseUrl = http://localhost:3002
+
+### UC02 reserva sem ids obrigatórios → esperado: 400 Bad Request
+POST {{baseUrl}}/reservas
+Content-Type: application/json
+
+{
+  "patioId": "p",
+  "veiculoId": "v"
+}
+
+### UC02 reserva com ids reais → esperado: 201 ou 404 conforme os dados preparados
+POST {{baseUrl}}/reservas
+Content-Type: application/json
+
+{
+  "patioId": "{{patioId}}",
+  "motoristaId": "{{motoristaId}}",
+  "veiculoId": "{{veiculoId}}",
+  "categoria": "PADRAO"
+}
